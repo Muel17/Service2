@@ -1,0 +1,17 @@
+{
+  "name": "bloom-habit-tracker-clone",
+  "version": "1.0.0",
+  "description": "Clone of Bloom — Habit & Goal Tracker",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "habit-tracker",
+    "bloom",
+    "clone"
+  ],
+  "author": "",
+  "license": "ISC"
+}
