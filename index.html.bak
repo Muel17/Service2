@@ -1,0 +1,3579 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>🌸 Bloom — Habit & Goal Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F6F5FA;
+      --bg-alt: #FFFFFF;
+      --surface: #FFFFFF;
+      --surface-hover: #FAFAFF;
+      --border: #E8E5F0;
+      --border-light: #F0EDF5;
+
+      --primary: #7C5CBF;
+      --primary-light: #EDE8F5;
+      --primary-dark: #5A3D9E;
+      --primary-50: rgba(124, 92, 191, 0.06);
+      --primary-100: rgba(124, 92, 191, 0.1);
+      --primary-200: rgba(124, 92, 191, 0.18);
+
+      --accent: #E8627C;
+      --accent-light: #FFF0F3;
+      --accent-dark: #C94D65;
+
+      --mint: #34B67A;
+      --mint-light: #EAFAF2;
+      --peach: #E8945A;
+      --peach-light: #FFF5ED;
+      --gold: #D4A017;
+      --gold-light: #FFF9E6;
+      --blue: #4A90D9;
+      --blue-light: #EBF3FC;
+
+      --ink: #1E1535;
+      --ink-secondary: #6B6080;
+      --ink-muted: #9890A8;
+
+      --shadow-sm: 0 1px 3px rgba(30, 21, 53, 0.06), 0 1px 2px rgba(30, 21, 53, 0.04);
+      --shadow-md: 0 4px 12px rgba(30, 21, 53, 0.08), 0 1px 4px rgba(30, 21, 53, 0.04);
+      --shadow-lg: 0 8px 28px rgba(30, 21, 53, 0.1), 0 2px 8px rgba(30, 21, 53, 0.04);
+      --shadow-xl: 0 16px 48px rgba(30, 21, 53, 0.12), 0 4px 12px rgba(30, 21, 53, 0.06);
+
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 8px;
+      --radius-full: 999px;
+
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'Inter', -apple-system, "Segoe UI", sans-serif;
+
+      --sidebar-width: 260px;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+    }
+
+    #app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    /* ---------- Layout ---------- */
+    .shell-layout {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .sidebar {
+      display: none;
+    }
+
+    @media(min-width:900px) {
+      .shell-layout {
+        align-items: stretch;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        width: var(--sidebar-width);
+        flex: none;
+        background: #1E1535;
+        color: #C8BFD8;
+        padding: 28px 16px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 3px;
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+
+      .sidebar .sb-brand {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 22px;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 2px;
+      }
+
+      .sidebar .sb-brand small {
+        display: block;
+        font-family: var(--sans);
+        font-style: normal;
+        font-size: 9px;
+        letter-spacing: 2px;
+        color: #8A7FA0;
+        margin-top: 5px;
+        text-transform: uppercase;
+      }
+
+      .sidebar .sb-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 18px 0;
+      }
+
+      .sidebar .sb-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 600;
+        color: #C8BFD8;
+        cursor: pointer;
+        position: relative;
+        border: none;
+        background: none;
+        text-align: left;
+        width: 100%;
+        font-family: var(--sans);
+        transition: background 0.15s var(--ease), color 0.15s var(--ease);
+      }
+
+      .sidebar .sb-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #E8E0F0;
+      }
+
+      .sidebar .sb-item.active {
+        background: rgba(124, 92, 191, 0.2);
+        color: #fff;
+      }
+
+      .sidebar .sb-item.active::before {
+        content: "";
+        position: absolute;
+        left: -16px;
+        top: 8px;
+        bottom: 8px;
+        width: 3px;
+        background: var(--primary);
+        border-radius: 3px;
+      }
+
+      .sidebar .sb-year-stepper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 6px 0 4px 30px;
+      }
+
+      .sidebar .sb-year-stepper .year-step {
+        border: none;
+        background: rgba(255, 255, 255, 0.08);
+        color: #C8BFD8;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        font-size: 11px;
+        cursor: pointer;
+        flex: none;
+        font-family: var(--sans);
+        transition: background 0.15s var(--ease);
+      }
+
+      .sidebar .sb-year-stepper .year-step:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .sidebar .sb-year-stepper .year-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #8A7FA0;
+        min-width: 34px;
+        text-align: center;
+      }
+
+      .sidebar .sb-submonths {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        margin: 2px 0 10px 30px;
+      }
+
+      .sidebar .sb-sub {
+        font-size: 12px;
+        padding: 7px 12px;
+        border-radius: var(--radius-xs);
+        color: #8A7FA0;
+        cursor: pointer;
+        border: none;
+        background: none;
+        text-align: left;
+        font-family: var(--sans);
+        font-weight: 500;
+        transition: all 0.15s var(--ease);
+      }
+
+      .sidebar .sb-sub:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #C8BFD8;
+      }
+
+      .sidebar .sb-sub.active {
+        color: #fff;
+        background: rgba(124, 92, 191, 0.15);
+        font-weight: 600;
+      }
+
+      .sidebar .sb-foot {
+        margin-top: auto;
+        font-size: 10px;
+        color: #6B6080;
+        text-align: center;
+        padding-top: 16px;
+        letter-spacing: 0.3px;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      #app {
+        max-width: none;
+        margin: 0;
+        padding: 32px 40px 80px;
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    /* ---------- Topbar ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(246, 245, 250, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px 10px;
+      margin: 0 -20px 24px;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 8px;
+      font-family: var(--serif);
+      font-style: italic;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      letter-spacing: 2px;
+      font-family: var(--sans);
+      font-style: normal;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .brand .credit {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      opacity: 0.9;
+      margin-top: 3px;
+      font-family: var(--sans);
+      font-style: normal;
+    }
+
+    .topbar-nav-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    nav#mainNav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    nav#mainNav button {
+      border: none;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      background: transparent;
+      transition: all 0.15s var(--ease);
+      font-family: var(--sans);
+    }
+
+    nav#mainNav button:hover {
+      background: var(--primary-50);
+      color: var(--primary);
+    }
+
+    nav#mainNav button.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(124, 92, 191, 0.25);
+    }
+
+    nav#subNav {
+      display: none;
+      justify-content: center;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .mobile-period-picker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .mobile-period-picker .year-step {
+      border: none;
+      background: var(--primary-light);
+      color: var(--primary);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 13px;
+      cursor: pointer;
+      flex: none;
+      font-family: var(--sans);
+      transition: all 0.15s var(--ease);
+    }
+
+    .mobile-period-picker .year-step:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .mobile-period-picker .year-label {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--ink);
+      flex: none;
+      min-width: 38px;
+      text-align: center;
+    }
+
+    .mobile-period-picker .month-select {
+      flex: 1;
+      max-width: 200px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius-full);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: border-color 0.15s var(--ease);
+    }
+
+    .mobile-period-picker .month-select:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--primary-50);
+    }
+
+    main#pageRoot {
+      padding-top: 4px;
+    }
+
+    h1.page-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 700;
+      font-size: 28px;
+      margin: 0 0 4px;
+      color: var(--ink);
+    }
+
+    p.page-sub {
+      margin: 0 0 24px;
+      color: var(--ink-secondary);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: box-shadow 0.2s var(--ease);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 17px;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      font-size: 14px;
+      color: var(--ink);
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+
+    /* ---------- Onboarding ---------- */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .legend-item {
+      background: var(--gold-light);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid rgba(212, 160, 23, 0.12);
+    }
+
+    .legend-item .ic {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .mood-legend-list {
+      list-style: none;
+      margin: 6px 0 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px 10px;
+      font-size: 12.5px;
+    }
+
+    .page-justify .mood-legend-list li {
+      text-align: left;
+    }
+
+    .page-justify p,
+    .page-justify li {
+      text-align: justify;
+    }
+
+    .stage-strip {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .stage-chip {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .stage-chip .icon-wrap {
+      width: 56px;
+      height: 56px;
+    }
+
+    .steps-list {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+    }
+
+    .steps-list li {
+      counter-increment: step;
+      position: relative;
+      padding: 12px 12px 12px 46px;
+      margin-bottom: 8px;
+      background: var(--primary-50);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      border: 1px solid var(--primary-100);
+    }
+
+    .steps-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- Habit setup ---------- */
+    .habit-setup {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .habit-slot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .habit-slot span.num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+
+    .habit-slot input[type=text] {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius-xs);
+      padding: 9px 12px;
+      font-size: 14px;
+      color: var(--ink);
+      font-family: var(--sans);
+      min-width: 0;
+      transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+    }
+
+    .habit-slot input[type=text]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-50);
+    }
+
+    .habit-slot input[type=text]::placeholder {
+      color: var(--ink-muted);
+    }
+
+    .btn-add-habit {
+      border: 1px dashed var(--border);
+      background: transparent;
+      color: var(--ink-secondary);
+      cursor: pointer;
+      padding: 9px 18px;
+      border-radius: var(--radius-xs);
+      font-weight: 600;
+      font-size: 13px;
+      font-family: var(--sans);
+      margin-top: 12px;
+      transition: all 0.15s var(--ease);
+    }
+
+    .btn-add-habit:hover {
+      background: var(--primary-50);
+      color: var(--primary);
+      border-color: var(--primary-200);
+    }
+
+    /* ---------- Grid ---------- */
+    .grid-dual-wrap {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .grid-label-col {
+      flex: none;
+    }
+
+    .grid-label-col table.habit-grid {
+      min-width: 0;
+      width: auto;
+    }
+
+    .grid-scroll {
+      overflow-x: auto;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .grid-scroll::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    .grid-scroll::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    table.habit-grid {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      min-width: 760px;
+    }
+
+    table.habit-grid th,
+    table.habit-grid td {
+      text-align: center;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    table.habit-grid th.habit-name-col,
+    table.habit-grid td.habit-name-col {
+      text-align: left;
+      padding: 6px 10px;
+      min-width: 130px;
+      max-width: 150px;
+      width: 150px;
+      box-sizing: border-box;
+      background-color: var(--surface);
+      font-weight: 600;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    table.habit-grid td.habit-name-col {
+      color: var(--ink);
+    }
+
+    table.habit-grid th.habit-name-col.habit-title-cell {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--primary);
+      background: var(--surface);
+      letter-spacing: 0.2px;
+      white-space: normal;
+      vertical-align: middle;
+    }
+
+    .week-label-row th {
+      padding: 10px 6px 8px;
+      font-weight: 700;
+      color: #fff;
+      font-size: 11px;
+      background: var(--primary);
+    }
+
+    .week-label-row th.corner {
+      background: var(--surface);
+    }
+
+    .week-label-row th.week-block {
+      border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    }
+
+    .dow-row th {
+      padding: 4px 2px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      font-size: 10px;
+      background: var(--primary-50);
+    }
+
+    .date-row th {
+      padding: 2px 2px 6px;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--ink);
+      background: rgba(124, 92, 191, 0.03);
+    }
+
+    td.day-cell {
+      padding: 4px 2px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    td.day-cell input[type=checkbox] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      transition: all 0.12s var(--ease);
+    }
+
+    td.day-cell input[type=checkbox]:checked {
+      background: var(--mint);
+      border-color: var(--mint);
+    }
+
+    td.day-cell input[type=checkbox]:checked::after {
+      content: "✓";
+      position: absolute;
+      inset: 0;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    td.day-cell input[type=checkbox]:hover {
+      border-color: var(--primary);
+    }
+
+    .week-divider-start {
+      border-left: 2px solid var(--border) !important;
+    }
+
+    .today-col {
+      background: var(--gold-light);
+    }
+
+    .today-col-first {
+      background: var(--gold-light);
+      border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+      box-shadow: inset 0 2px 0 0 var(--gold);
+    }
+
+    .today-col-last {
+      background: var(--gold-light);
+      border-radius: 0 0 var(--radius-xs) var(--radius-xs);
+      box-shadow: inset 0 -2px 0 0 var(--gold);
+    }
+
+    table.habit-grid th[data-day],
+    table.habit-grid td[data-day] {
+      min-width: 34px;
+    }
+
+    th.summary-col,
+    td.summary-col {
+      min-width: 64px;
+      padding: 4px 6px !important;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(246, 245, 250, 0.6);
+    }
+
+    th.summary-col.first {
+      border-left: 1px solid var(--border) !important;
+    }
+
+    td.summary-col.first {
+      border-left: 1px solid var(--border) !important;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: var(--border-light);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 11px;
+      color: #fff;
+      background: var(--peach);
+    }
+
+    .rank-badge.rank-1 {
+      background: var(--gold);
+      color: var(--ink);
+    }
+
+    /* Beat the day row */
+    .beatday-row td,
+    .beatday-row th {
+      padding: 6px 2px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--mint-light);
+    }
+
+    .beatday-row td.habit-name-col {
+      background: var(--mint-light);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .beatday-cell {
+      border-radius: 6px;
+      margin: 2px;
+      padding: 3px 0;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .beatday-cell.full {
+      background: var(--gold);
+      color: #6b5300;
+    }
+
+    /* Mood row */
+    .mood-row td,
+    .mood-row th {
+      padding: 6px 2px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--accent-light);
+    }
+
+    .mood-row td.habit-name-col {
+      background: var(--accent-light);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    select.mood-select {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 34px;
+      height: 30px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      text-align: center;
+      font-size: 15px;
+      text-align-last: center;
+      color: var(--ink);
+      font-family: var(--sans);
+      transition: border-color 0.15s var(--ease);
+    }
+
+    select.mood-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-50);
+    }
+
+    .growth-icon-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+    }
+
+    /* ---------- Card header row ---------- */
+    .card-head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .card-head-row h2 {
+      margin-bottom: 0;
+    }
+
+    .btn-jump-today {
+      border: none;
+      cursor: pointer;
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 12px;
+      background: var(--gold-light);
+      color: var(--gold);
+      font-family: var(--sans);
+      white-space: nowrap;
+      border: 1px solid rgba(212, 160, 23, 0.2);
+      transition: all 0.15s var(--ease);
+    }
+
+    .btn-jump-today:hover {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    /* ---------- Info callout ---------- */
+    .info-callout {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: var(--blue-light);
+      border: 1px solid rgba(74, 144, 217, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.55;
+      margin-bottom: 22px;
+      color: var(--ink);
+    }
+
+    .info-callout .ic {
+      font-size: 18px;
+      line-height: 1.3;
+      flex: none;
+    }
+
+    .card.accent-config {
+      border-left: 3px solid var(--peach);
+    }
+
+    /* ---------- Charts ---------- */
+    .chart-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .chart-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-width: 600px;
+    }
+
+    .chart-wrap.chart-wrap-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .chart-wrap.chart-wrap-fit svg {
+      width: auto;
+      min-width: 0;
+    }
+
+    /* ---------- Analytics ---------- */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .kpi {
+      border-radius: var(--radius);
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s var(--ease);
+    }
+
+    .kpi:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .kpi .ic-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .kpi .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi .val {
+      font-family: var(--serif);
+      font-size: 26px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .kpi.c-lavender .ic-wrap {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .kpi.c-mint .ic-wrap {
+      background: var(--mint-light);
+      color: var(--mint);
+    }
+
+    .kpi.c-gold .ic-wrap {
+      background: var(--gold-light);
+      color: var(--gold);
+    }
+
+    .kpi.c-peach .ic-wrap {
+      background: var(--peach-light);
+      color: var(--peach);
+    }
+
+    .kpi.c-pink .ic-wrap {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    @media(min-width:900px) {
+      .kpi-row {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .kpi {
+        padding: 14px 12px;
+      }
+
+      .kpi .kpi-top {
+        margin-bottom: 6px;
+      }
+
+      .kpi .ic-wrap {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+        border-radius: var(--radius-xs);
+      }
+
+      .kpi .lbl {
+        font-size: 9px;
+      }
+
+      .kpi .val {
+        font-size: 21px;
+      }
+    }
+
+    .mood-dist {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mood-dist-chip {
+      flex: 1;
+      min-width: 70px;
+      text-align: center;
+      background: var(--gold-light);
+      border: 1px solid rgba(212, 160, 23, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 12px 8px;
+      font-size: 20px;
+    }
+
+    .mood-dist-chip .mdc-pct {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-top: 3px;
+    }
+
+    .mood-dist-chip .mdc-lbl {
+      display: block;
+      font-size: 9px;
+      color: var(--ink-muted);
+      font-weight: 600;
+    }
+
+    .mood-dist-empty {
+      font-size: 13px;
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+
+    @media(max-width:899px) {
+      .mood-dist {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .habit-rank-list {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .habit-rank-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: var(--radius-xs);
+      background: var(--bg);
+    }
+
+    .habit-rank-list .rank-badge {
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      flex: none;
+    }
+
+    .habit-rank-list .hr-name {
+      flex: 1;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .habit-rank-list .hr-pct {
+      font-weight: 800;
+      color: var(--accent);
+      flex: none;
+    }
+
+    .insight-card {
+      background: linear-gradient(135deg, var(--accent-light), var(--primary-light));
+      border-color: transparent;
+    }
+
+    .insight-text {
+      font-size: 15px;
+      line-height: 1.75;
+      margin: 0;
+      color: var(--ink);
+      text-align: justify;
+    }
+
+    .btn-soft {
+      border: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 13px;
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--sans);
+      transition: all 0.15s var(--ease);
+      box-shadow: 0 2px 6px rgba(124, 92, 191, 0.2);
+    }
+
+    .btn-soft:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(124, 92, 191, 0.3);
+    }
+
+    .empty-note {
+      font-size: 13px;
+      color: var(--ink-muted);
+      font-style: italic;
+      padding: 8px 0;
+    }
+
+    footer.app-footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-top: 40px;
+    }
+
+    .watermark {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 60;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 5px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      pointer-events: none;
+      user-select: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .watermark span {
+      color: var(--primary);
+    }
+
+    .brand-license {
+      display: none;
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--peach);
+      letter-spacing: 0.3px;
+    }
+
+    .footer-license {
+      display: none;
+      margin-top: 2px;
+    }
+
+    @media(max-width:640px) {
+      .brand {
+        font-size: 20px;
+      }
+
+      nav#mainNav button {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      h1.page-title {
+        font-size: 22px;
+      }
+
+      .watermark {
+        padding: 3px 8px;
+        font-size: 9px;
+        right: 8px;
+        bottom: 8px;
+      }
+    }
+
+    /* ---------- Lock screen ---------- */
+    .lock-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: var(--bg);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lock-screen.show {
+      display: flex;
+    }
+
+    body.locked .shell-layout,
+    body.locked .watermark,
+    body.locked .chatbot-fab {
+      display: none;
+    }
+
+    .lock-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 32px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .lock-card .lock-brand {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .lock-card .lock-sub {
+      font-size: 13px;
+      color: var(--ink-secondary);
+      margin: 0 0 20px;
+    }
+
+    .lock-card input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius-xs);
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--ink);
+      font-family: var(--sans);
+      text-align: center;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.15s var(--ease);
+    }
+
+    .lock-card input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-50);
+    }
+
+    .lock-card .btn-soft {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .lock-card .lock-error {
+      color: var(--accent);
+      font-size: 12.5px;
+      font-weight: 700;
+      margin: 10px 0 0;
+    }
+
+    /* ---------- PIN screen ---------- */
+    .pin-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 998;
+      background: var(--bg);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .pin-screen.show {
+      display: flex;
+    }
+
+    .pin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 30px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      margin: auto;
+    }
+
+    .pin-card.shake {
+      animation: pinShake .4s;
+    }
+
+    @keyframes pinShake {
+
+      10%,
+      90% {
+        transform: translateX(-2px);
+      }
+
+      20%,
+      80% {
+        transform: translateX(4px);
+      }
+
+      30%,
+      50%,
+      70% {
+        transform: translateX(-8px);
+      }
+
+      40%,
+      60% {
+        transform: translateX(8px);
+      }
+    }
+
+    .pin-card .pin-emoji {
+      font-size: 36px;
+      margin-bottom: 6px;
+    }
+
+    .pin-card .pin-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .pin-card .pin-sub {
+      font-size: 13px;
+      color: var(--ink-secondary);
+      margin: 0 0 16px;
+    }
+
+    .pin-card .pin-error {
+      color: var(--accent);
+      font-size: 12.5px;
+      font-weight: 700;
+      min-height: 16px;
+      margin-bottom: 8px;
+    }
+
+    .pin-email-field {
+      text-align: left;
+      margin-bottom: 14px;
+    }
+
+    .pin-email-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pin-email-field input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius-xs);
+      padding: 11px 14px;
+      font-size: 15px;
+      color: var(--ink);
+      font-family: var(--sans);
+      box-sizing: border-box;
+      transition: border-color 0.15s var(--ease);
+    }
+
+    .pin-email-field input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-50);
+    }
+
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: transparent;
+      transition: all 0.15s var(--ease);
+    }
+
+    .pin-dot.filled {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .pin-key {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: var(--sans);
+      transition: background 0.1s var(--ease);
+    }
+
+    .pin-key:hover {
+      background: var(--primary-50);
+    }
+
+    .pin-key:active {
+      background: var(--primary-light);
+    }
+
+    .pin-key.pin-back {
+      font-size: 15px;
+    }
+
+    .pin-switch {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      margin-top: 10px;
+    }
+
+    .pin-switch .link-btn,
+    .pin-forgot {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 12.5px;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 2px;
+      font-family: var(--sans);
+      font-weight: 600;
+    }
+
+    .pin-note-box {
+      margin-top: 18px;
+      background: var(--blue-light);
+      border: 1px solid rgba(74, 144, 217, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .pin-note-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .pin-note-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pin-note-list li {
+      font-size: 11.5px;
+      color: var(--ink-secondary);
+      line-height: 1.5;
+      text-align: justify;
+    }
+
+    .btn-lock-account {
+      border: none;
+      cursor: pointer;
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 12px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-family: var(--sans);
+      white-space: nowrap;
+      border: 1px solid rgba(232, 98, 124, 0.12);
+      transition: all 0.15s var(--ease);
+    }
+
+    .btn-lock-account:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-lock-account.icon-only {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      font-size: 14px;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- AI Chatbot ---------- */
+    .chatbot-fab {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 800;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.2s var(--ease);
+    }
+
+    .chatbot-fab:hover {
+      background: var(--primary-dark);
+      transform: scale(1.06);
+    }
+
+    .chatbot-fab svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .chatbot-panel {
+      display: none;
+      position: fixed;
+      z-index: 810;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      flex-direction: column;
+      right: 20px;
+      bottom: 88px;
+      width: 380px;
+      height: 520px;
+    }
+
+    .chatbot-panel.open {
+      display: flex;
+    }
+
+    @media(max-width:640px) {
+      .chatbot-panel {
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        max-height: 100vh;
+      }
+
+      .chatbot-fab {
+        right: 16px;
+        bottom: 16px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+    }
+
+    .chatbot-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      flex: none;
+      background: var(--bg);
+    }
+
+    .chatbot-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chatbot-header-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .chatbot-header-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+      font-family: var(--sans);
+      font-style: normal;
+    }
+
+    .chatbot-header-info p {
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin: 0;
+    }
+
+    .chatbot-close {
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--ink-muted);
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s var(--ease);
+    }
+
+    .chatbot-close:hover {
+      background: var(--border-light);
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chatbot-messages::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .chatbot-messages::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .chat-msg {
+      max-width: 85%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+    }
+
+    .chat-msg.bot {
+      align-self: flex-start;
+    }
+
+    .chat-bubble {
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      border-radius: var(--radius-sm);
+      word-wrap: break-word;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: var(--primary);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-msg.bot .chat-bubble {
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid var(--border-light);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-time {
+      font-size: 10px;
+      color: var(--ink-muted);
+    }
+
+    .chat-msg.user .chat-time {
+      text-align: right;
+    }
+
+    .chat-typing {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 14px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+    }
+
+    .chat-typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ink-muted);
+      animation: typingDot 1.2s ease-in-out infinite;
+    }
+
+    .chat-typing span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .chat-typing span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingDot {
+
+      0%,
+      60%,
+      100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+
+      30% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .chatbot-input-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      flex: none;
+      background: var(--surface);
+    }
+
+    .chatbot-input {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: var(--radius-full);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--ink);
+      font-family: var(--sans);
+      resize: none;
+      transition: border-color 0.15s var(--ease);
+    }
+
+    .chatbot-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-50);
+    }
+
+    .chatbot-input::placeholder {
+      color: var(--ink-muted);
+    }
+
+    .chatbot-send {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: background 0.15s var(--ease);
+    }
+
+    .chatbot-send:hover {
+      background: var(--primary-dark);
+    }
+
+    .chatbot-send:disabled {
+      background: var(--border);
+      cursor: default;
+    }
+
+    .chatbot-send svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="lock-screen" id="lockScreen"></div>
+  <div class="pin-screen" id="pinScreen"></div>
+  <div class="shell-layout">
+    <aside class="sidebar" id="sidebarNav"></aside>
+    <div id="app">
+      <div class="topbar">
+        <div class="brand">🌸 Bloom <small>HABIT &amp; GOAL TRACKER</small><small class="credit">by barenglisa</small>
+          <small class="brand-license" id="brandLicense"></small>
+        </div>
+        <div class="topbar-nav-row">
+          <nav id="mainNav"></nav>
+          <button type="button" class="btn-lock-account icon-only" id="topbarLockBtn"
+            aria-label="Kunci Akun">🔒</button>
+        </div>
+        <nav id="subNav"></nav>
+      </div>
+      <main id="pageRoot"></main>
+      <footer class="app-footer">🌸 Bloom by barenglisa — data tracker hanya bisa di akses oleh kamu dengan kombinasi
+        email + PIN. Lupa akses? Data tidak bisa dipulihkan.<br /><span class="footer-license"
+          id="footerLicense"></span></footer>
+    </div>
+  </div>
+  <div class="watermark">🌸 barenglisa<span> · Bloom</span></div>
+
+  <script type="module">
+    /* =========================================================
+       BLOOM — Habit & Goal Tracker
+       Vanilla JS, single-page, localStorage-backed + Firebase cloud sync.
+       ========================================================= */
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD88JbVqIBsJoBRmxVogpwh5vpoHLmnXVU",
+      authDomain: "barenglisa---bloom-tracker.firebaseapp.com",
+      projectId: "barenglisa---bloom-tracker",
+      storageBucket: "barenglisa---bloom-tracker.firebasestorage.app",
+      messagingSenderId: "224156207934",
+      appId: "1:224156207934:web:4de0c0d986090153c8ba6f",
+      measurementId: "G-0BB9ZSZDVJ"
+    };
+    const fbApp = initializeApp(firebaseConfig);
+    const auth = getAuth(fbApp);
+    const dbFirestore = getFirestore(fbApp);
+
+    /* ---------- Lisensi Personal (JANGAN EDIT MANUAL — diisi otomatis oleh Generator) ---------- */
+    /* Token di bawah ini akan diganti oleh Generator-Personalisasi-Bloom.html dengan nama pembeli. */
+    const BUYER_NAME_RAW = "__BUYER_NAME__";
+    const BUYER_NAME = (BUYER_NAME_RAW.indexOf("__BUYER_NAME__") === -1) ? BUYER_NAME_RAW.trim() : "";
+
+    function applyBuyerLicense() {
+      if (!BUYER_NAME) return;
+      const text = `Lisensi personal untuk: ${BUYER_NAME}`;
+      const brandEl = document.getElementById("brandLicense");
+      const footerEl = document.getElementById("footerLicense");
+      if (brandEl) { brandEl.textContent = text; brandEl.style.display = "block"; }
+      if (footerEl) { footerEl.textContent = `${text} — mohon tidak dibagikan ulang ✨`; footerEl.style.display = "inline"; }
+    }
+
+    /* ---------- Config ---------- */
+    /* Periode multi-tahun: bulan/tahun dibangun dinamis (bukan array tetap 2026 lagi),
+       biar Bloom bisa dipakai jangka panjang tanpa dianggap "edisi tahunan". Format key
+       dipertahankan sama persis (mis. "agustus2026") biar data lama tetap kebaca. */
+    const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const YEAR_MIN = 2000;
+    const YEAR_MAX = 2100;
+    function monthKeyFor(year, monthIndex) {
+      return `${MONTH_NAMES[monthIndex].toLowerCase()}${year}`;
+    }
+    function monthMetaFor(year, monthIndex) {
+      return { key: monthKeyFor(year, monthIndex), label: MONTH_NAMES[monthIndex], year, monthIndex };
+    }
+    function parseMonthKey(key) {
+      const m = /^([a-z]+)(\d{4})$/.exec(key || "");
+      if (!m) return null;
+      const idx = MONTH_NAMES.findIndex(name => name.toLowerCase() === m[1]);
+      if (idx === -1) return null;
+      return monthMetaFor(parseInt(m[2], 10), idx);
+    }
+    const HABITS_PER_MONTH = 10;
+    const DOW_LABELS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"]; // Monday-first
+    const STORAGE_KEY = "bloomTrackerData_v1";
+    const LAST_EMAIL_KEY = "bloomLastEmail_v1";
+
+    /* ---------- Cloud sync: auth (email + PIN 4 digit) & enkripsi client-side ----------
+       Pola identik dengan Digital Journal (barenglisa), disesuaikan ke struktur data Bloom
+       (1 state gabungan per user, bukan banyak entry terpisah). Detail lengkap ada di CLAUDE.md. */
+    function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((email || "").trim()); }
+
+    async function derivePassword(email, pin) {
+      const enc = new TextEncoder().encode("bloom_auth_v1_" + email + "_" + pin);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function deriveEncryptionKey(email, pin) {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(pin), "PBKDF2", false, ["deriveKey"]);
+      const salt = enc.encode("bloom_salt_v1_" + email);
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    function bufToBase64(buf) {
+      const bytes = new Uint8Array(buf);
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunkSize) binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+      return btoa(binary);
+    }
+    function base64ToBuf(b64) {
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return arr.buffer;
+    }
+
+    let encryptionKey = null;
+
+    async function encryptState(stateObj) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const plaintext = new TextEncoder().encode(JSON.stringify(stateObj));
+      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, encryptionKey, plaintext);
+      return { iv: bufToBase64(iv), data: bufToBase64(cipher) };
+    }
+    async function decryptState(payload) {
+      const iv = new Uint8Array(base64ToBuf(payload.iv));
+      const cipherBuf = base64ToBuf(payload.data);
+      const plainBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, encryptionKey, cipherBuf);
+      return JSON.parse(new TextDecoder().decode(plainBuf));
+    }
+
+    async function pushStateToCloud() {
+      if (!auth.currentUser || !encryptionKey) return;
+      const payload = await encryptState(STATE);
+      await setDoc(doc(dbFirestore, "users", auth.currentUser.uid, "bloom", "state"), payload);
+    }
+    async function pullStateFromCloud() {
+      if (!auth.currentUser || !encryptionKey) return null;
+      const snap = await getDoc(doc(dbFirestore, "users", auth.currentUser.uid, "bloom", "state"));
+      if (!snap.exists()) return null;
+      try { return await decryptState(snap.data()); } catch (e) { return null; }
+    }
+    async function syncFromCloud() {
+      const cloud = await pullStateFromCloud();
+      if (cloud && (cloud.updatedAt || 0) > (STATE.updatedAt || 0)) {
+        STATE = normalizeState(cloud);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      } else {
+        await pushStateToCloud();
+      }
+    }
+
+    function friendlyAuthError(err) {
+      const code = (err && err.code) || "";
+      if (!navigator.onLine || code === "auth/network-request-failed") return "Nggak ada koneksi internet — coba lagi ya.";
+      if (code === "auth/invalid-email") return "Format email-nya kayaknya salah.";
+      if (code === "auth/too-many-requests") return "Kebanyakan percobaan — coba lagi sebentar lagi ya.";
+      return "Email atau PIN salah, coba lagi.";
+    }
+
+    /* ---------- Kode Akses (ganti nilainya lalu redeploy buat rotasi kode) ---------- */
+    const ACCESS_CODE = "BLOOM2026";
+    const ACCESS_KEY = "bloomAccessGranted_v1";
+    function hasAccess() { return localStorage.getItem(ACCESS_KEY) === "granted"; }
+    function grantAccess() { localStorage.setItem(ACCESS_KEY, "granted"); }
+
+    const GROWTH_STAGES = [
+      { min: 0, max: 19, key: "seed", label: "Benih" },
+      { min: 20, max: 39, key: "sprout", label: "Tunas" },
+      { min: 40, max: 59, key: "potted", label: "Berdaun" },
+      { min: 60, max: 79, key: "tulip", label: "Berbunga" },
+      { min: 80, max: 100, key: "sunflower", label: "Mekar" },
+    ];
+
+    const MOOD_OPTIONS = [
+      { key: "empty", emoji: "😔", label: "Empty" },
+      { key: "stressful", emoji: "🤯", label: "Stressfull" },
+      { key: "drained", emoji: "😫", label: "Drained" },
+      { key: "fine", emoji: "😌", label: "Fine" },
+      { key: "happy", emoji: "🥰", label: "Happy" },
+      { key: "winday", emoji: "🏆", label: "Win the day" },
+    ];
+
+    /* ---------- State ---------- */
+    function defaultMonthState() {
+      return {
+        habits: Array(HABITS_PER_MONTH).fill(""),
+        checks: {}, // checks[habitIndex] = { [day]: true }
+        moods: {}   // moods[day] = mood key
+      };
+    }
+    function normalizeState(raw) {
+      const state = { months: {} };
+      const rawMonths = (raw && raw.months) || {};
+      Object.keys(rawMonths).forEach(key => {
+        const m = rawMonths[key] || defaultMonthState();
+        // safety: ensure habits array has correct length
+        while (m.habits.length < HABITS_PER_MONTH) m.habits.push("");
+        if (!m.checks) m.checks = {};
+        if (!m.moods) m.moods = {};
+        state.months[key] = m;
+      });
+      state.updatedAt = (raw && raw.updatedAt) || 0;
+      return state;
+    }
+    function loadState() {
+      let raw;
+      try { raw = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { raw = null; }
+      return normalizeState(raw);
+    }
+    // Bulan sekarang tak terbatas (bukan 12 entri tetap), jadi STATE.months[key] nggak selalu ada.
+    // monthState(): baca-saja, aman dipanggil buat bulan yang belum pernah dibuka (Analytics/Insight).
+    // ensureMonthState(): dipanggil pas bulan itu benar-benar dibuka/ditulis (renderMonthPage, toggle, dst).
+    function monthState(monthKey) {
+      return STATE.months[monthKey] || defaultMonthState();
+    }
+    function ensureMonthState(monthKey) {
+      if (!STATE.months[monthKey]) STATE.months[monthKey] = defaultMonthState();
+      return STATE.months[monthKey];
+    }
+    let STATE = loadState();
+    function saveState() {
+      STATE.updatedAt = Date.now();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      pushStateToCloud().catch(() => { });
+    }
+
+    /* ---------- Date utils ---------- */
+    function daysInMonth(year, monthIndex) {
+      return new Date(year, monthIndex + 1, 0).getDate();
+    }
+    function dowLabelForDate(year, monthIndex, day) {
+      const jsDow = new Date(year, monthIndex, day).getDay(); // 0=Sun..6=Sat
+      const mondayFirstIndex = (jsDow + 6) % 7; // 0=Mon..6=Sun
+      return DOW_LABELS[mondayFirstIndex];
+    }
+    function buildWeeks(totalDays) {
+      const weeks = [];
+      for (let start = 1; start <= totalDays; start += 7) {
+        const end = Math.min(start + 6, totalDays);
+        const days = [];
+        for (let d = start; d <= end; d++) days.push(d);
+        weeks.push(days);
+      }
+      return weeks;
+    }
+    function todayInfo() {
+      const now = new Date();
+      return { year: now.getFullYear(), monthIndex: now.getMonth(), day: now.getDate() };
+    }
+    function isCurrentMonth(meta) {
+      const t = todayInfo();
+      return t.year === meta.year && t.monthIndex === meta.monthIndex;
+    }
+
+    /* ---------- Growth stage lookup ---------- */
+    function stageForPct(pct) { // pct 0..100
+      const clamped = Math.max(0, Math.min(100, pct));
+      return GROWTH_STAGES.find(s => clamped >= s.min && clamped <= s.max) || GROWTH_STAGES[0];
+    }
+
+    /* ---------- Growth icon SVGs (original flat illustrations) ---------- */
+    function growthIconSVG(stageKey, size) {
+      size = size || 40;
+      const common = `width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"`;
+      const pot = `<path d="M20 46 L44 46 L41 60 L23 60 Z" fill="#E8A87C"/><rect x="18" y="42" width="28" height="6" rx="3" fill="#D89568"/>`;
+      switch (stageKey) {
+        case "seed":
+          return `<svg ${common}>
+        <ellipse cx="32" cy="50" rx="14" ry="6" fill="#D6C9A1" opacity="0.5"/>
+        <ellipse cx="32" cy="46" rx="7" ry="9" fill="#9B7653"/>
+        <ellipse cx="30" cy="43" rx="2.4" ry="3.2" fill="#C9A876" opacity="0.7"/>
+      </svg>`;
+        case "sprout":
+          return `<svg ${common}>
+        ${pot}
+        <path d="M32 42 C32 34 32 30 32 26" stroke="#6FBF9B" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M32 30 C26 28 24 22 26 18 C30 20 32 25 32 30 Z" fill="#8FD3AE"/>
+        <path d="M32 32 C38 30 40 25 38 21 C34 23 32 28 32 32 Z" fill="#6FBF9B"/>
+      </svg>`;
+        case "potted":
+          return `<svg ${common}>
+        ${pot}
+        <path d="M32 42 C32 30 32 24 32 20" stroke="#6FBF9B" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+        <path d="M32 26 C24 24 20 16 23 11 C29 13 32 20 32 26 Z" fill="#8FD3AE"/>
+        <path d="M32 30 C40 28 44 19 41 14 C35 16 32 23 32 30 Z" fill="#6FBF9B"/>
+        <path d="M32 34 C25 33 21 27 23 23 C28 25 31 29 32 34 Z" fill="#A6E0C2"/>
+      </svg>`;
+        case "tulip":
+          return `<svg ${common}>
+        ${pot}
+        <path d="M32 42 C32 30 31 22 31 16" stroke="#6FBF9B" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M31 28 C24 27 21 20 24 16 C29 18 31 23 31 28 Z" fill="#8FD3AE"/>
+        <path d="M31 30 C38 28 41 21 38 17 C33 19 31 25 31 30 Z" fill="#6FBF9B"/>
+        <g transform="translate(31,14)">
+          <path d="M0 0 C-7 2 -8 12 0 16 C8 12 7 2 0 0 Z" fill="#E88FA8"/>
+          <path d="M0 2 C-4 4 -4 11 0 14 C4 11 4 4 0 2 Z" fill="#F6B9CC"/>
+        </g>
+      </svg>`;
+        case "sunflower":
+          return `<svg ${common}>
+        ${pot}
+        <path d="M32 42 C32 28 32 20 32 14" stroke="#6FBF9B" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+        <path d="M32 30 C23 29 19 21 22 16 C28 18 31 24 32 30 Z" fill="#8FD3AE"/>
+        <path d="M32 33 C41 31 45 22 41 17 C35 19 32 26 32 33 Z" fill="#6FBF9B"/>
+        <g transform="translate(32,12)">
+          <g fill="#F2C94C">
+            <ellipse cx="0" cy="-11" rx="3.6" ry="6"/>
+            <ellipse cx="0" cy="11" rx="3.6" ry="6"/>
+            <ellipse cx="11" cy="0" rx="6" ry="3.6"/>
+            <ellipse cx="-11" cy="0" rx="6" ry="3.6"/>
+            <ellipse cx="7.8" cy="-7.8" rx="3.6" ry="6" transform="rotate(45 7.8 -7.8)"/>
+            <ellipse cx="-7.8" cy="-7.8" rx="3.6" ry="6" transform="rotate(-45 -7.8 -7.8)"/>
+            <ellipse cx="7.8" cy="7.8" rx="3.6" ry="6" transform="rotate(-45 7.8 7.8)"/>
+            <ellipse cx="-7.8" cy="7.8" rx="3.6" ry="6" transform="rotate(45 -7.8 7.8)"/>
+          </g>
+          <circle cx="0" cy="0" r="6.5" fill="#9B7653"/>
+        </g>
+      </svg>`;
+        default:
+          return `<svg ${common}></svg>`;
+      }
+    }
+
+    /* ---------- Computation helpers ---------- */
+    function activeHabitIndices(monthKey) {
+      const habits = monthState(monthKey).habits;
+      const idx = [];
+      habits.forEach((name, i) => { if (name && name.trim() !== "") idx.push(i); });
+      return idx;
+    }
+    function isChecked(monthKey, habitIdx, day) {
+      const c = monthState(monthKey).checks[habitIdx];
+      return !!(c && c[day]);
+    }
+    function toggleCheck(monthKey, habitIdx, day) {
+      const checks = ensureMonthState(monthKey).checks;
+      if (!checks[habitIdx]) checks[habitIdx] = {};
+      checks[habitIdx][day] = !checks[habitIdx][day];
+      saveState();
+    }
+    function getMood(monthKey, day) {
+      return monthState(monthKey).moods[day] || "";
+    }
+    function setMood(monthKey, day, moodKey) {
+      const moods = ensureMonthState(monthKey).moods;
+      if (moodKey) {
+        moods[day] = moodKey;
+      } else {
+        delete moods[day];
+      }
+      saveState();
+    }
+    function moodOption(key) {
+      return MOOD_OPTIONS.find(m => m.key === key);
+    }
+    function habitTotal(monthKey, habitIdx, totalDays) {
+      const c = monthState(monthKey).checks[habitIdx] || {};
+      let total = 0;
+      for (let d = 1; d <= totalDays; d++) if (c[d]) total++;
+      return total;
+    }
+    function habitPct(monthKey, habitIdx, totalDays) {
+      const total = habitTotal(monthKey, habitIdx, totalDays);
+      return totalDays > 0 ? (total / totalDays) * 100 : 0;
+    }
+    function longestStreak(monthKey, habitIdx, totalDays) {
+      let longest = 0, run = 0;
+      for (let d = 1; d <= totalDays; d++) {
+        if (isChecked(monthKey, habitIdx, d)) { run++; if (run > longest) longest = run; }
+        else run = 0;
+      }
+      return longest;
+    }
+    function computeRanks(monthKey, totalDays) {
+      // returns map habitIdx -> rank (1 = best), competition ranking, only among active habits.
+      // Tie-breaker 1: kalau % sama persis, rentetan hari beruntun (longest streak) terpanjang menang duluan.
+      // Tie-breaker 2: kalau % dan streak dua-duanya sama persis, slot habit dengan index lebih kecil
+      // (dibuat/diisi duluan) menang — jaminan nggak akan pernah ada 2 rank yang sama.
+      const active = activeHabitIndices(monthKey);
+      const withPct = active.map(i => ({
+        i,
+        pct: habitPct(monthKey, i, totalDays),
+        streak: longestStreak(monthKey, i, totalDays)
+      }));
+      withPct.sort((a, b) => (b.pct - a.pct) || (b.streak - a.streak) || (a.i - b.i));
+      // Index selalu unik per habit, jadi urutan hasil sort di atas udah deterministik total —
+      // nggak ada lagi kondisi 2 item beneran identik, tinggal assign rank berurutan 1..N.
+      const ranks = {};
+      withPct.forEach((item, idx) => { ranks[item.i] = idx + 1; });
+      return ranks;
+    }
+    function beatDayPct(monthKey, day) {
+      const active = activeHabitIndices(monthKey);
+      if (active.length === 0) return 0;
+      let checkedCount = 0;
+      active.forEach(i => { if (isChecked(monthKey, i, day)) checkedCount++; });
+      return (checkedCount / active.length) * 100;
+    }
+    function weekAvgBeatDay(monthKey, days) {
+      if (days.length === 0) return 0;
+      const sum = days.reduce((acc, d) => acc + beatDayPct(monthKey, d), 0);
+      return sum / days.length;
+    }
+
+    /* ---------- Smooth area chart (Catmull-Rom -> Bezier) ---------- */
+    function catmullRomToBezierPath(points) {
+      if (points.length === 0) return "";
+      if (points.length === 1) return `M ${points[0].x},${points[0].y}`;
+      let d = `M ${points[0].x},${points[0].y}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i === 0 ? 0 : i - 1];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2 < points.length ? i + 2 : points.length - 1];
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+        d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+      }
+      return d;
+    }
+    function buildDailyTrendChart(monthKey, totalDays) {
+      // Line chart harian (1..totalDays), dipakai section "Trend % complete" di Analytics (#26).
+      // Label sumbu X FULL per hari (bukan sampled) — chart ini sengaja dibiarkan horizontal-scroll
+      // (dibungkus .chart-wrap biasa, bukan .chart-wrap-compact) biar 31 titik+label tetap kebaca.
+      const width = Math.max(600, totalDays * 22);
+      const height = 180;
+      const padL = 34, padR = 12, padT = 14, padB = 26;
+      const plotW = width - padL - padR;
+      const plotH = height - padT - padB;
+
+      const pts = [];
+      for (let d = 1; d <= totalDays; d++) {
+        const pct = beatDayPct(monthKey, d);
+        const x = padL + ((d - 1) / Math.max(1, totalDays - 1)) * plotW;
+        const y = padT + plotH - (pct / 100) * plotH;
+        pts.push({ x, y, d, pct });
+      }
+      const linePath = catmullRomToBezierPath(pts);
+      const first = pts[0], last = pts[pts.length - 1];
+      const areaPath = pts.length ? `${linePath} L ${last.x},${padT + plotH} L ${first.x},${padT + plotH} Z` : "";
+
+      // gridlines at 0/50/100
+      let grid = "";
+      [0, 50, 100].forEach(v => {
+        const y = padT + plotH - (v / 100) * plotH;
+        grid += `<line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="#EFE8FB" stroke-width="1"/>`;
+        grid += `<text x="${padL - 6}" y="${y + 3}" font-size="9" text-anchor="end" fill="#9B85C9" font-weight="700">${v}%</text>`;
+      });
+      // x labels: SATU LABEL PER TITIK DATA (tiap tanggal), bukan interval/sampling.
+      let xLabels = "";
+      pts.forEach(p => {
+        xLabels += `<text x="${p.x}" y="${height - 8}" font-size="9" text-anchor="middle" fill="#9B85C9" font-weight="700">${p.d}</text>`;
+      });
+
+      return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMinYMid meet">
+    <defs>
+      <linearGradient id="areaFill-${monthKey}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#E88FA8" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#E88FA8" stop-opacity="0.05"/>
+      </linearGradient>
+    </defs>
+    ${grid}
+    <path d="${areaPath}" fill="url(#areaFill-${monthKey})"/>
+    <path d="${linePath}" fill="none" stroke="#E88FA8" stroke-width="2.5" stroke-linecap="round"/>
+    ${xLabels}
+  </svg>`;
+    }
+    function buildBarChart(dataPoints) {
+      // dataPoints: [{label, pct}] — generic bar chart, lebar svg menyesuaikan JUMLAH bar (bukan
+      // fixed 560px kayak versi lama) plus width & height diset eksplisit (bukan cuma viewBox),
+      // biar wrapper ber-CSS width:fit-content bisa hug ukuran asli chart, bukan ngestretch ke
+      // lebar card (dipakai buat "Weekly trend" Periode, #28 — cuma 4-5 bar).
+      const padL = 34, padR = 16, padT = 16, padB = 34;
+      const barW = 56, gap = 22;
+      const n = dataPoints.length;
+      const plotW = n * barW + Math.max(0, n - 1) * gap;
+      const width = padL + plotW + padR;
+      const height = 220;
+      const plotH = height - padT - padB;
+
+      let bars = "";
+      dataPoints.forEach((m, i) => {
+        const x = padL + i * (barW + gap);
+        const h = (Math.max(0, Math.min(100, m.pct)) / 100) * plotH;
+        const y = padT + plotH - h;
+        bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="8" fill="#9B85C9"/>`;
+        bars += `<text x="${x + barW / 2}" y="${y - 6}" font-size="11" text-anchor="middle" fill="#5B4B7A" font-weight="800">${m.pct.toFixed(0)}%</text>`;
+        bars += `<text x="${x + barW / 2}" y="${height - 12}" font-size="10.5" text-anchor="middle" fill="#5B4B7A" font-weight="700">${m.label}</text>`;
+      });
+      let grid = "";
+      [0, 50, 100].forEach(v => {
+        const y = padT + plotH - (v / 100) * plotH;
+        grid += `<line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="#EFE8FB" stroke-width="1"/>`;
+        grid += `<text x="${padL - 6}" y="${y + 3}" font-size="9" text-anchor="end" fill="#9B85C9" font-weight="700">${v}%</text>`;
+      });
+
+      return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${grid}${bars}</svg>`;
+    }
+    function buildWeeklyBarChart(monthKey, totalDays) {
+      // Reuse weekAvgBeatDay() -- fungsi yang sama persis dipakai buat Ikon Tumbuh di
+      // "Pertumbuhan tanaman habit-mu" -- biar angka rata-rata per-minggu konsisten antar section.
+      const weeks = buildWeeks(totalDays);
+      const dataPoints = weeks.map((days, wi) => ({ label: `W${wi + 1}`, pct: weekAvgBeatDay(monthKey, days) }));
+      return buildBarChart(dataPoints);
+    }
+
+    /* ---------- Router ---------- */
+    function currentRoute() {
+      const hash = location.hash.replace(/^#\/?/, "");
+      if (!hash) return { page: "onboarding" };
+      if (hash.startsWith("month/")) return { page: "month", key: hash.split("/")[1] };
+      if (hash === "analytics") return { page: "analytics" };
+      return { page: "onboarding" };
+    }
+    function navigate(hash) {
+      location.hash = hash;
+    }
+    window.addEventListener("hashchange", render);
+
+    /* ---------- Nav render ---------- */
+    let lastMonthKey = monthKeyFor(todayInfo().year, todayInfo().monthIndex);
+
+    function renderNav(route) {
+      if (route.page === "month") lastMonthKey = route.key;
+
+      const nav = document.getElementById("mainNav");
+      const items = [
+        { hash: "#/onboarding", label: "📖 Panduan", active: route.page === "onboarding" },
+        { hash: `#/month/${lastMonthKey}`, label: "🗓️ Periode", active: route.page === "month" },
+        { hash: "#/analytics", label: "📊 Analytics", active: route.page === "analytics" },
+      ];
+      nav.innerHTML = items.map(it =>
+        `<button data-hash="${it.hash}" class="${it.active ? "active" : ""}">${it.label}</button>`
+      ).join("");
+      nav.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => navigate(btn.dataset.hash));
+      });
+
+      // Mobile-only month picker (<900px): year-stepper + dropdown, ganti dari 12 pill.
+      const subNav = document.getElementById("subNav");
+      if (route.page === "month") {
+        const meta = parseMonthKey(route.key) || monthMetaFor(todayInfo().year, todayInfo().monthIndex);
+        const monthOptions = MONTH_NAMES.map((name, idx) =>
+          `<option value="${monthKeyFor(meta.year, idx)}" ${idx === meta.monthIndex ? "selected" : ""}>${name}</option>`
+        ).join("");
+        subNav.innerHTML = `
+      <div class="mobile-period-picker">
+        <button type="button" class="year-step" id="subNavYearPrev" aria-label="Tahun sebelumnya">◀</button>
+        <span class="year-label">${meta.year}</span>
+        <button type="button" class="year-step" id="subNavYearNext" aria-label="Tahun berikutnya">▶</button>
+        <select id="subNavMonthSelect" class="month-select">${monthOptions}</select>
+      </div>
+    `;
+        subNav.style.display = "flex";
+        document.getElementById("subNavYearPrev").addEventListener("click", () => {
+          if (meta.year > YEAR_MIN) navigate(`#/month/${monthKeyFor(meta.year - 1, meta.monthIndex)}`);
+        });
+        document.getElementById("subNavYearNext").addEventListener("click", () => {
+          if (meta.year < YEAR_MAX) navigate(`#/month/${monthKeyFor(meta.year + 1, meta.monthIndex)}`);
+        });
+        document.getElementById("subNavMonthSelect").addEventListener("change", (e) => navigate(`#/month/${e.target.value}`));
+      } else {
+        subNav.innerHTML = "";
+        subNav.style.display = "none";
+      }
+    }
+
+    /* ---------- Sidebar render (wide screens) ---------- */
+    let sidebarYear = todayInfo().year;
+
+    function renderSidebar(route, syncYearFromRoute) {
+      const sb = document.getElementById("sidebarNav");
+      if (syncYearFromRoute !== false && route.page === "month") {
+        const meta = parseMonthKey(route.key);
+        if (meta) sidebarYear = meta.year;
+      }
+      const monthsHTML = MONTH_NAMES.map((name, idx) => {
+        const key = monthKeyFor(sidebarYear, idx);
+        return `<button class="sb-sub ${route.page === "month" && route.key === key ? "active" : ""}" data-hash="#/month/${key}">${name}</button>`;
+      }).join("");
+
+      sb.innerHTML = `
+    <div class="sb-brand">🌸 Bloom<small>HABIT &amp; GOAL TRACKER</small></div>
+    <div class="sb-divider"></div>
+    <button class="sb-item ${route.page === "onboarding" ? "active" : ""}" data-hash="#/onboarding"><span>📖</span> Panduan</button>
+    <button class="sb-item ${route.page === "month" ? "active" : ""}" data-hash="#/month/${lastMonthKey}"><span>🗓️</span> Periode</button>
+    <div class="sb-year-stepper">
+      <button type="button" class="year-step" id="sbYearPrev" aria-label="Tahun sebelumnya">◀</button>
+      <span class="year-label">${sidebarYear}</span>
+      <button type="button" class="year-step" id="sbYearNext" aria-label="Tahun berikutnya">▶</button>
+    </div>
+    <div class="sb-submonths">${monthsHTML}</div>
+    <button class="sb-item ${route.page === "analytics" ? "active" : ""}" data-hash="#/analytics"><span>📊</span> Analytics</button>
+    <button type="button" class="btn-lock-account" id="sbLockBtn" style="margin:12px auto 0;" aria-label="Kunci Akun">🔒</button>
+    <div class="sb-foot">by barenglisa</div>
+  `;
+      sb.querySelectorAll("[data-hash]").forEach(btn => {
+        btn.addEventListener("click", () => navigate(btn.dataset.hash));
+      });
+      document.getElementById("sbLockBtn").addEventListener("click", lockBloomAccount);
+      document.getElementById("sbYearPrev").addEventListener("click", () => {
+        if (sidebarYear > YEAR_MIN) { sidebarYear--; renderSidebar(route, false); }
+      });
+      document.getElementById("sbYearNext").addEventListener("click", () => {
+        if (sidebarYear < YEAR_MAX) { sidebarYear++; renderSidebar(route, false); }
+      });
+    }
+
+    /* ---------- Page: Onboarding ---------- */
+    function renderOnboarding() {
+      const root = document.getElementById("pageRoot");
+      root.innerHTML = `
+    <div class="page-justify">
+    <h1 class="page-title">Welcome to Bloom 🌸</h1>
+    <p class="page-sub">Habit tracker ini bakal nemenin journey konsistensi kamu. Kamu bisa pantau terus tanamanmu sampai bermekaran</p>
+
+    <div class="card">
+      <h2>Cara Pakai</h2>
+      <ol class="steps-list">
+        <li>Buka tab Periode, isi sampai max 10 habit buat bulan ini.</li>
+        <li>Centang habit setiap hari ketika kamu berhasil konsisten.</li>
+        <li>Grid otomatis ngitung total, % comp, dan rank per habit.</li>
+        <li>Beat the Day = Persentase semua habit selesai hari itu</li>
+        <li>Catat mood harian tiap hari, terpisah dari skor habit.</li>
+        <li>Ikon tumbuh akan berubah sesuai rata-rata konsistensi mingguan.</li>
+        <li>Cek tab Analytics buat rangkuman & insight lintas bulan.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Fitur Bloom</h2>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="ic">✅</span><div><b>Total</b><br/>Jumlah hari habit dicentang bulan ini.</div></div>
+        <div class="legend-item"><span class="ic">📊</span><div><b>% Comp.</b><br/>Total ÷ jumlah hari bulan.</div></div>
+        <div class="legend-item"><span class="ic">🏅</span><div><b>Rank</b><br/>Ranking antar habit, nomor #1 = paling konsisten.</div></div>
+        <div class="legend-item"><span class="ic">🏆</span><div><b>Beat the Day</b><br/>% semua habit selesai HARI itu.</div></div>
+        <div class="legend-item"><span class="ic">🎭</span><div>
+          <b>Mood Harian</b><br/>Catatan perasaan harian tidak mempengaruhi skor habitmu ya
+          <ul class="mood-legend-list">
+            <li>😔 Empty</li>
+            <li>🤯 Stressful</li>
+            <li>😫 Drained</li>
+            <li>😌 Fine</li>
+            <li>🥰 Happy</li>
+            <li>🏆 Win the day</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pertumbuhan tanaman habit-mu</h2>
+      <div class="stage-strip">
+        ${GROWTH_STAGES.map(s => `
+          <div class="stage-chip">
+            <div class="icon-wrap">${growthIconSVG(s.key, 56)}</div>
+            ${s.label}<br/>${s.min}–${s.max}%
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tentang Penyimpanan Data</h2>
+      <p style="font-size:14px; margin:0 0 10px;">Data Bloom kamu tersimpan aman & terenkripsi di cloud, terkunci sama email + PIN yang kamu buat sendiri. Ini bikin datamu bisa diakses dari HP maupun laptop, tapi ada satu hal penting yang perlu kamu inget:</p>
+      <ul style="font-size:13.5px; line-height:1.7; padding-left:20px; margin:0 0 4px;">
+        <li><b>Jika kamu lupa email + PIN kamu = Data hilang permanen, satu-satunya solusi adalah membuat akun baru.</b> PIN kamu itu sekaligus kunci enkripsi, jadi nggak ada cara reset atau pulihkan dari sisi kami.</li>
+        <li>Data kamu terenkripsi sebelum dikirim ke cloud — cuma kamu (lewat email + PIN kamu) yang bisa buka isinya.</li>
+        <li>Simpan email + PIN kamu baik-baik, dan jangan share ke siapapun.</li>
+      </ul>
+    </div>
+    </div>
+  `;
+    }
+
+    /* ---------- Page: Month ---------- */
+    // visible-count per bulan buat progressive disclosure Setup Habit — direset cuma pas mount fresh
+    // (route change), BUKAN tiap re-render akibat ngetik/checklist, biar nggak ganggu slot yang udah dibuka.
+    let habitSlotVisibleCount = {};
+
+    // Input habit name: cuma update state + patch list slot (add/remove trailing slot div) secara
+    // real-time, TANPA innerHTML rebuild penuh — mobile keyboard ketutup sendiri kalau elemen input
+    // yang lagi difokus dihancurkan/dibuat ulang tiap keystroke. Grid Harian & chart (nama, rank, dst)
+    // direbuild penuh lewat idle-check debounce di bawah, BUKAN listener "blur" — blur elemen lama
+    // fire bersamaan sama proses fokus elemen baru kalau user tap langsung pindah antar slot habit,
+    // jadi rebuild sinkron di situ beresiko ganggu fokus slot berikutnya.
+    let habitGridSyncTimer = null;
+    function scheduleHabitGridSync(root, monthKey) {
+      clearTimeout(habitGridSyncTimer);
+      habitGridSyncTimer = setTimeout(() => {
+        const active = document.activeElement;
+        const stillEditing = active && active.matches && active.matches('input[type=text][data-habit-idx]');
+        if (stillEditing) {
+          scheduleHabitGridSync(root, monthKey);
+          return;
+        }
+        // Nggak ada habit-name input yang lagi difokus lagi -> aman buat bener-bener nurunin
+        // visible count ke jumlah yang keisi (bukan cuma Math.max sama angka lama yang sempat
+        // ke-inflate sama guard idx+1 pas real-time typing tadi).
+        const habitsNow = STATE.months[monthKey].habits;
+        const filledNow = habitsNow.reduce((n, name) => n + (name && name.trim() !== "" ? 1 : 0), 0);
+        habitSlotVisibleCount[monthKey] = Math.min(HABITS_PER_MONTH, Math.max(3, filledNow));
+        const gs = root.querySelector(".grid-scroll");
+        const scrollX = gs ? gs.scrollLeft : 0;
+        renderMonthPage(monthKey, false);
+        const newGs = document.querySelector(".grid-scroll");
+        if (newGs) newGs.scrollLeft = scrollX;
+      }, 500);
+    }
+    function attachHabitInputListeners(inp, root, monthKey) {
+      inp.addEventListener("input", () => {
+        const idx = parseInt(inp.dataset.habitIdx, 10);
+        STATE.months[monthKey].habits[idx] = inp.value;
+        saveState();
+
+        const habitsNow = STATE.months[monthKey].habits;
+        const filledNow = habitsNow.reduce((n, name) => n + (name && name.trim() !== "" ? 1 : 0), 0);
+        // idx+1 jaga slot yang lagi difokus/diketik supaya nggak collapse SAAT MASIH DIKETIK.
+        // Proteksi ini cuma sementara — begitu fokus pindah ke mana pun (bukan cuma ke slot index
+        // lebih kecil), scheduleHabitGridSync() di bawah bakal nurunin count-nya balik ke jumlah
+        // yang beneran keisi begitu idle & nggak ada habit-name input yang difokus lagi.
+        const newVisible = Math.min(HABITS_PER_MONTH, Math.max(3, filledNow, idx + 1));
+        if (newVisible !== habitSlotVisibleCount[monthKey]) {
+          habitSlotVisibleCount[monthKey] = newVisible;
+          patchHabitSlotList(root, monthKey, habitsNow, newVisible);
+        }
+        scheduleHabitGridSync(root, monthKey);
+      });
+    }
+
+    function patchHabitSlotList(root, monthKey, habits, visibleCount) {
+      const container = root.querySelector(".habit-setup");
+      if (!container) return;
+      let slots = Array.from(container.querySelectorAll(".habit-slot"));
+      while (slots.length > visibleCount) {
+        slots.pop().remove();
+      }
+      while (slots.length < visibleCount) {
+        const i = slots.length;
+        const div = document.createElement("div");
+        div.className = "habit-slot";
+        div.innerHTML = `<span class="num">${i + 1}</span><input type="text" maxlength="40" placeholder="Tulis habit barumu di sini ✨" value="${escapeHtml(habits[i] || "")}" data-habit-idx="${i}" />`;
+        container.appendChild(div);
+        slots.push(div);
+        attachHabitInputListeners(div.querySelector("input"), root, monthKey);
+      }
+      const card = container.closest(".accent-config");
+      let addBtn = card ? card.querySelector("#btnAddHabitSlot") : null;
+      const canAddMore = visibleCount < HABITS_PER_MONTH;
+      if (canAddMore && !addBtn && card) {
+        addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "btn-add-habit";
+        addBtn.id = "btnAddHabitSlot";
+        addBtn.textContent = "+ Tambah Habit";
+        card.appendChild(addBtn);
+        addBtn.addEventListener("click", () => {
+          if (habitSlotVisibleCount[monthKey] < HABITS_PER_MONTH) habitSlotVisibleCount[monthKey]++;
+          renderMonthPage(monthKey, false);
+        });
+      } else if (!canAddMore && addBtn) {
+        addBtn.remove();
+      }
+    }
+
+    function renderMonthPage(monthKey, isFreshMount) {
+      if (isFreshMount === undefined) isFreshMount = true;
+      const meta = parseMonthKey(monthKey) || monthMetaFor(todayInfo().year, todayInfo().monthIndex);
+      const root = document.getElementById("pageRoot");
+
+      ensureMonthState(monthKey);
+      const totalDays = daysInMonth(meta.year, meta.monthIndex);
+      const weeks = buildWeeks(totalDays);
+      const habits = STATE.months[monthKey].habits;
+      const ranks = computeRanks(monthKey, totalDays);
+
+      const filledCount = habits.reduce((n, name) => n + (name && name.trim() !== "" ? 1 : 0), 0);
+      if (isFreshMount || habitSlotVisibleCount[monthKey] === undefined) {
+        habitSlotVisibleCount[monthKey] = Math.max(3, filledCount);
+      }
+      const visibleCount = Math.min(HABITS_PER_MONTH, Math.max(habitSlotVisibleCount[monthKey], filledCount));
+      habitSlotVisibleCount[monthKey] = visibleCount;
+      const canAddMore = visibleCount < HABITS_PER_MONTH;
+
+      root.innerHTML = `
+    <h1 class="page-title">${meta.label} ${meta.year}</h1>
+    <p class="page-sub">${totalDays} hari siap bantu kamu konsisten merubah habit-mu</p>
+
+    <div class="card accent-config">
+      <h2>Setup Habit</h2>
+      <div class="habit-setup">
+        ${habits.slice(0, visibleCount).map((name, i) => `
+          <div class="habit-slot">
+            <span class="num">${i + 1}</span>
+            <input type="text" maxlength="40" placeholder="Tulis habit barumu di sini ✨" value="${escapeHtml(name)}" data-habit-idx="${i}" />
+          </div>
+        `).join("")}
+      </div>
+      ${canAddMore ? `<button type="button" class="btn-add-habit" id="btnAddHabitSlot">+ Tambah Habit</button>` : ""}
+    </div>
+
+    <div class="info-callout">
+      <span class="ic">💡</span>
+      <span>Klik <b>🗓️ Hari Ini</b> buat lompat ke tanggal sekarang di Grid Harian — klik sekali lagi buat balik ke awal bulan.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head-row">
+        <h2>Grid Harian</h2>
+        <button type="button" class="btn-jump-today" id="btnJumpTodayGrid">🗓️ Hari Ini</button>
+      </div>
+      ${buildGridTable(monthKey, meta, totalDays, weeks, ranks)}
+    </div>
+
+    <div class="card">
+      <h2>📌 Weekly trend</h2>
+      <div class="chart-wrap chart-wrap-fit">${buildWeeklyBarChart(monthKey, totalDays)}</div>
+    </div>
+  `;
+
+      syncGridRowHeights(root);
+      scrollGridToToday(root, meta);
+      gridJumpedToToday = true;
+
+      root.querySelectorAll("#btnJumpTodayGrid").forEach(btn => {
+        btn.addEventListener("click", () => jumpToToday(root, monthKey, meta));
+      });
+
+      const addSlotBtn = document.getElementById("btnAddHabitSlot");
+      if (addSlotBtn) addSlotBtn.addEventListener("click", () => {
+        if (habitSlotVisibleCount[monthKey] < HABITS_PER_MONTH) habitSlotVisibleCount[monthKey]++;
+        renderMonthPage(monthKey, false);
+      });
+
+      root.querySelectorAll('input[type=text][data-habit-idx]').forEach(inp => {
+        attachHabitInputListeners(inp, root, monthKey);
+      });
+
+      root.querySelectorAll('input[type=checkbox][data-day]').forEach(cb => {
+        cb.addEventListener("change", () => {
+          const habitIdx = parseInt(cb.dataset.habitIdx, 10);
+          const day = parseInt(cb.dataset.day, 10);
+          toggleCheck(monthKey, habitIdx, day);
+          const scrollX = root.querySelector(".grid-scroll").scrollLeft;
+          renderMonthPage(monthKey, false);
+          const gs = document.querySelector(".grid-scroll");
+          if (gs) gs.scrollLeft = scrollX;
+        });
+      });
+
+      root.querySelectorAll('select.mood-select[data-day]').forEach(sel => {
+        sel.addEventListener("change", () => {
+          const day = parseInt(sel.dataset.day, 10);
+          setMood(monthKey, day, sel.value);
+          const scrollX = root.querySelector(".grid-scroll").scrollLeft;
+          renderMonthPage(monthKey, false);
+          const gs = document.querySelector(".grid-scroll");
+          if (gs) gs.scrollLeft = scrollX;
+        });
+      });
+    }
+
+    /* Baris tabel label & tabel grid tumbuh independen (beda konten per baris),
+       jadi tingginya disamakan manual di sini biar dua tabel tetap sejajar.
+       Index 1 & 2 dikecualikan dari sync 1:1 biasa: label table nge-merge cell "Habit"
+       (rowspan=2) menutupi dow-row + date-row, jadi tinggi gabungannya di-samain ke JUMLAH
+       tinggi asli dow-row+date-row di tabel scroll (bukan dibandingkan per-baris satu-satu). */
+    function syncGridRowHeights(root) {
+      const labelRows = root.querySelectorAll('.grid-label-col tr');
+      const scrollRows = root.querySelectorAll('.grid-scroll tr');
+
+      function syncOneRow(labelRow, scrollRow) {
+        if (!labelRow || !scrollRow) return;
+        Array.from(labelRow.children).forEach(c => c.style.height = "");
+        Array.from(scrollRow.children).forEach(c => c.style.height = "");
+        const h = Math.max(labelRow.getBoundingClientRect().height, scrollRow.getBoundingClientRect().height);
+        Array.from(labelRow.children).forEach(c => c.style.height = h + "px");
+        Array.from(scrollRow.children).forEach(c => c.style.height = h + "px");
+      }
+
+      // index 0: corner row, sync normal 1:1
+      syncOneRow(labelRows[0], scrollRows[0]);
+
+      // index 1 & 2: label "Habit" title cell (rowspan=2) vs scroll dow-row + date-row combined
+      const habitTitleCell = labelRows[1] ? labelRows[1].querySelector('th, td') : null;
+      const scrollDowRow = scrollRows[1], scrollDateRow = scrollRows[2];
+      if (habitTitleCell && scrollDowRow && scrollDateRow) {
+        habitTitleCell.style.height = "";
+        Array.from(scrollDowRow.children).forEach(c => c.style.height = "");
+        Array.from(scrollDateRow.children).forEach(c => c.style.height = "");
+        const dowH = scrollDowRow.getBoundingClientRect().height;
+        const dateH = scrollDateRow.getBoundingClientRect().height;
+        let total = dowH + dateH;
+        const needed = habitTitleCell.getBoundingClientRect().height;
+        if (needed > total) {
+          const extra = needed - total;
+          Array.from(scrollDowRow.children).forEach(c => c.style.height = (dowH + extra) + "px");
+          total = needed;
+        }
+        habitTitleCell.style.height = total + "px";
+      }
+
+      // index 3+: habit rows, beat-day row, mood row — kembali ke sync normal 1:1
+      for (let i = 3; i < labelRows.length; i++) {
+        syncOneRow(labelRows[i], scrollRows[i]);
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
+    }
+
+    function buildGridTable(monthKey, meta, totalDays, weeks, ranks) {
+      const habits = STATE.months[monthKey].habits;
+      const activeIdx = activeHabitIndices(monthKey);
+      const today = todayInfo();
+      const isCurMonth = isCurrentMonth(meta);
+
+      // ---------- Tabel label (kolom "Habit" pertama, tidak ikut di-scroll) ----------
+      // "Habit" digabung (rowspan=2) menutupi baris dow-row + date-row biar jadi judul kolom yang eye-catching.
+      // date-row tetap ada sebagai <tr> kosong (TANPA <th>) biar jumlah <tr> tetap 3 & index tetap sejajar
+      // sama tabel scroll — lihat catatan teknis syncGridRowHeights() di CLAUDE.md poin 9.
+      let labelHead = `<tr class="week-label-row"><th class="habit-name-col corner"></th></tr>`;
+      labelHead += `<tr class="dow-row"><th class="habit-name-col habit-title-cell" rowspan="2">Habit</th></tr>`;
+      labelHead += `<tr class="date-row"></tr>`;
+
+      let labelBody = "";
+      activeIdx.forEach(i => {
+        labelBody += `<tr><td class="habit-name-col">${escapeHtml(habits[i])}</td></tr>`;
+      });
+      labelBody += `<tr class="beatday-row"><td class="habit-name-col">🏆 Beat the Day</td></tr>`;
+      labelBody += `<tr class="mood-row"><td class="habit-name-col">🎭 Mood Harian</td></tr>`;
+
+      const labelTable = `<table class="habit-grid habit-grid-label">
+    <thead>${labelHead}</thead>
+    <tbody>${labelBody}</tbody>
+  </table>`;
+
+      // ---------- Tabel grid (semua kolom lain, di dalam area scrollable) ----------
+      // Header: week label row
+      let weekLabelRow = `<tr class="week-label-row">`;
+      weeks.forEach((days, wi) => {
+        const avg = weekAvgBeatDay(monthKey, days);
+        const stage = stageForPct(avg);
+        weekLabelRow += `<th class="week-block" colspan="${days.length}">
+      <div class="growth-icon-cell">${growthIconSVG(stage.key, 52)}</div>
+      Minggu ${wi + 1}
+    </th>`;
+      });
+      weekLabelRow += `<th class="summary-col first" colspan="3"></th></tr>`;
+
+      // Header: day-of-week row
+      let dowRow = `<tr class="dow-row">`;
+      for (let d = 1; d <= totalDays; d++) {
+        const isWeekStart = (d - 1) % 7 === 0;
+        const isToday = isCurMonth && d === today.day;
+        dowRow += `<th class="${isWeekStart ? "week-divider-start" : ""} ${isToday ? "today-col today-col-first" : ""}" data-day="${d}">${dowLabelForDate(meta.year, meta.monthIndex, d)}</th>`;
+      }
+      dowRow += `<th class="summary-col first">Total</th><th class="summary-col">% Comp.</th><th class="summary-col">Rank</th></tr>`;
+
+      // Header: date row
+      let dateRow = `<tr class="date-row">`;
+      for (let d = 1; d <= totalDays; d++) {
+        const isWeekStart = (d - 1) % 7 === 0;
+        const isToday = isCurMonth && d === today.day;
+        dateRow += `<th class="${isWeekStart ? "week-divider-start" : ""} ${isToday ? "today-col" : ""}" data-day="${d}">${d}</th>`;
+      }
+      dateRow += `<th class="summary-col first"></th><th class="summary-col"></th><th class="summary-col"></th></tr>`;
+
+      // Body rows: one per habit with a name
+      let bodyRows = "";
+      activeIdx.forEach(i => {
+        const total = habitTotal(monthKey, i, totalDays);
+        const pct = habitPct(monthKey, i, totalDays);
+        const rank = ranks[i];
+        bodyRows += `<tr>
+      ${Array.from({ length: totalDays }, (_, idx) => {
+          const d = idx + 1;
+          const isWeekStart = idx % 7 === 0;
+          const isToday = isCurMonth && d === today.day;
+          const checked = isChecked(monthKey, i, d);
+          return `<td class="day-cell ${isWeekStart ? "week-divider-start" : ""} ${isToday ? "today-col" : ""}" data-day="${d}">
+          <input type="checkbox" data-habit-idx="${i}" data-day="${d}" ${checked ? "checked" : ""}/>
+        </td>`;
+        }).join("")}
+      <td class="summary-col first">${total}/${totalDays}</td>
+      <td class="summary-col">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct.toFixed(0)}%"></div></div>
+      </td>
+      <td class="summary-col"><span class="rank-badge ${rank === 1 ? "rank-1" : ""}">${rank}</span></td>
+    </tr>`;
+      });
+
+      // Beat the day row
+      let beatRow = `<tr class="beatday-row">`;
+      for (let d = 1; d <= totalDays; d++) {
+        const pct = beatDayPct(monthKey, d);
+        const isWeekStart = (d - 1) % 7 === 0;
+        const isToday = isCurMonth && d === today.day;
+        const full = activeIdx.length > 0 && pct >= 100;
+        beatRow += `<td class="${isWeekStart ? "week-divider-start" : ""} ${isToday ? "today-col" : ""}" data-day="${d}"><div class="beatday-cell ${full ? "full" : ""}">${activeIdx.length ? pct.toFixed(0) + "%" : "–"}</div></td>`;
+      }
+      beatRow += `<td class="summary-col first" colspan="3"></td></tr>`;
+
+      // Mood harian row
+      let moodRow = `<tr class="mood-row">`;
+      for (let d = 1; d <= totalDays; d++) {
+        const isWeekStart = (d - 1) % 7 === 0;
+        const isToday = isCurMonth && d === today.day;
+        const current = getMood(monthKey, d);
+        const opts = MOOD_OPTIONS.map(m => `<option value="${m.key}" ${current === m.key ? "selected" : ""}>${m.emoji}</option>`).join("");
+        moodRow += `<td class="${isWeekStart ? "week-divider-start" : ""} ${isToday ? "today-col today-col-last" : ""}" data-day="${d}">
+      <select class="mood-select" data-day="${d}" title="${current ? moodOption(current).label : "Pilih mood"}">
+        <option value="">–</option>
+        ${opts}
+      </select>
+    </td>`;
+      }
+      moodRow += `<td class="summary-col first" colspan="3"></td></tr>`;
+
+      const scrollTable = `<table class="habit-grid habit-grid-scroll-table">
+    <thead>${weekLabelRow}${dowRow}${dateRow}</thead>
+    <tbody>${bodyRows}${beatRow}${moodRow}</tbody>
+  </table>`;
+
+      const emptyNote = activeIdx.length === 0
+        ? `<p class="empty-note">Isi nama habit di atas dulu buat mulai tracking bulan ini.</p>`
+        : "";
+
+      return `${emptyNote}<div class="grid-dual-wrap">
+    <div class="grid-label-col">${labelTable}</div>
+    <div class="grid-scroll">${scrollTable}</div>
+  </div>`;
+    }
+
+    /* ---------- Tombol "Hari Ini" (toggle: hari ini <-> awal bulan) ---------- */
+    let gridJumpedToToday = true; // reset tiap renderMonthPage() mount, karena grid udah auto-scroll ke hari ini duluan
+
+    function scrollGridToToday(root, meta) {
+      if (!isCurrentMonth(meta)) return;
+      const t = todayInfo();
+      const target = root.querySelector(`.grid-scroll [data-day="${t.day}"]`);
+      if (target) target.scrollIntoView({ inline: "center", block: "nearest" });
+    }
+
+    function scrollGridToStart(root) {
+      const gs = root.querySelector(".grid-scroll");
+      if (gs) gs.scrollLeft = 0;
+    }
+
+    function jumpToToday(root, monthKey, meta) {
+      const t = todayInfo();
+      const targetMeta = monthMetaFor(t.year, t.monthIndex);
+      if (targetMeta.key !== monthKey) {
+        navigate(`#/month/${targetMeta.key}`);
+        return;
+      }
+      if (gridJumpedToToday) {
+        scrollGridToStart(root);
+        gridJumpedToToday = false;
+      } else {
+        scrollGridToToday(root, meta);
+        gridJumpedToToday = true;
+      }
+    }
+
+    /* ---------- Recap bulan ini (rule-based, fixed 4-slot skeleton) ----------
+       Ganti total dari desain lama (state-detection + pool-random-fact) karena testing nunjukin
+       bug: kondisi 0% dan 100% sama-sama kena label "good start" (state-detection cuma ngecek
+       ada/tidaknya histori, bukan nilai data). Desain baru: skeleton tetap 4 slot, urutan tetap,
+       render tiap bulan dengan format sama persis — cuma angka/nama habit yang beda sesuai data
+       real. Tidak ada branching narasi/tone, cuma branching buat kondisi data kosong per slot. */
+    function computeRecapData(meta) {
+      const monthKey = meta.key;
+      const totalDays = daysInMonth(meta.year, meta.monthIndex);
+      const habits = monthState(monthKey).habits;
+      const activeIdx = activeHabitIndices(monthKey);
+
+      const habitStats = activeIdx.map(i => ({
+        name: habits[i],
+        pct: habitPct(monthKey, i, totalDays),
+        total: habitTotal(monthKey, i, totalDays),
+        streak: longestStreak(monthKey, i, totalDays)
+      }));
+
+      const moodCounts = {}; MOOD_OPTIONS.forEach(m => moodCounts[m.key] = 0);
+      let moodTotal = 0;
+      for (let d = 1; d <= totalDays; d++) {
+        const mk = getMood(monthKey, d);
+        if (mk && moodCounts.hasOwnProperty(mk)) { moodCounts[mk]++; moodTotal++; }
+      }
+
+      const totalChecklist = habitStats.reduce((s, h) => s + h.total, 0);
+      const longestStreakOverall = habitStats.reduce((max, h) => Math.max(max, h.streak), 0);
+
+      return { meta, habitStats, moodCounts, moodTotal, totalChecklist, longestStreakOverall };
+    }
+
+    function generateSmartInsight(selectedMeta) {
+      // Filter Analytics sekarang single bulan+tahun (bukan range lagi) — Recap SELALU ngerecap
+      // persis bulan yang lagi dipilih di filter itu, nggak ada lagi logic "cari bulan terakhir
+      // yang ada datanya" kayak jaman filter masih range Jan-Des.
+      const { meta, habitStats, moodCounts, moodTotal, totalChecklist, longestStreakOverall } = computeRecapData(selectedMeta);
+
+      if (habitStats.length === 0 && moodTotal === 0 && totalChecklist === 0) {
+        return "Belum ada data.";
+      }
+
+      const parts = [];
+
+      // Slot 1 — top 2 habit tertinggi bulan ini
+      if (habitStats.length === 0) {
+        parts.push(`${meta.label} ini belum ada habit yang kamu jalanin.`);
+      } else {
+        const sorted = habitStats.slice().sort((a, b) => b.pct - a.pct);
+        parts.push(sorted.length === 1
+          ? `${meta.label} ini kamu berhasil ${escapeHtml(sorted[0].name)} ${sorted[0].pct.toFixed(0)}%.`
+          : `${meta.label} ini kamu berhasil ${escapeHtml(sorted[0].name)} ${sorted[0].pct.toFixed(0)}% dan ${escapeHtml(sorted[1].name)} ${sorted[1].pct.toFixed(0)}%.`);
+      }
+
+      // Slot 2 — distribusi mood dominan (murni deskriptif)
+      if (moodTotal === 0) {
+        parts.push("Kamu belum mencatat mood sama sekali.");
+      } else {
+        const sortedMoods = MOOD_OPTIONS
+          .map(m => ({ label: m.label, pct: (moodCounts[m.key] / moodTotal) * 100 }))
+          .sort((a, b) => b.pct - a.pct);
+        const top = sortedMoods[0];
+        const bottom = sortedMoods[sortedMoods.length - 1];
+        parts.push(`Distribusi mood kamu didominasi ${top.label.toLowerCase()} sebanyak ${top.pct.toFixed(0)}% dan ${bottom.label.toLowerCase()} sebanyak ${bottom.pct.toFixed(0)}% bulan ini.`);
+      }
+
+      // Slot 3 — total checklist & streak terpanjang (angka apa adanya, termasuk 0)
+      parts.push(`Kamu udah checklist habit sebanyak ${totalChecklist} kali dan streak terpanjang kamu ${longestStreakOverall} hari.`);
+
+      // Slot 4 — habit paling lemah + satu-satunya closing ajakan di section ini
+      if (habitStats.length > 0) {
+        const weakest = habitStats.slice().sort((a, b) => a.pct - b.pct)[0];
+        parts.push(`Untuk habit ${escapeHtml(weakest.name)}, based on data adalah yang terendah di ${weakest.pct.toFixed(0)}%. Bulan depan kamu bisa lebih konsisten ya!`);
+      }
+
+      // #27: gabung jadi 1 paragraf mengalir (dipisah spasi biasa, bukan line break) — dibungkus
+      // <p class="insight-text"> yang CSS-nya text-align:justify.
+      return parts.join(" ");
+    }
+
+    /* ---------- Page: Analytics ---------- */
+    // #24: filter Analytics sekarang single bulan+tahun (bukan range dari-sampai lagi) --
+    // jadi SATU-SATUNYA sumber "bulan yang lagi dipilih" buat semua section di bawahnya
+    // (Statistik Keseluruhan, Top Habit #25, Trend #26, Recap #27).
+    function defaultAnalyticsMonth() {
+      const t = todayInfo();
+      return { year: t.year, monthIndex: t.monthIndex };
+    }
+    let analyticsSelected = defaultAnalyticsMonth();
+
+    function analyticsYearOptions() {
+      const t = todayInfo();
+      const years = [];
+      for (let y = t.year - 5; y <= t.year + 5; y++) years.push(y);
+      return years;
+    }
+
+    // #25: top 3 habit (by % completion) bulan terpilih -- SENGAJA fungsi terpisah dari slot 1
+    // Recap (generateSmartInsight, top 2) biar perubahan salah satu section nggak accidentally
+    // ikut ngubah section lain.
+    function topHabitsForMonth(meta, n) {
+      const monthKey = meta.key;
+      const totalDays = daysInMonth(meta.year, meta.monthIndex);
+      const activeIdx = activeHabitIndices(monthKey);
+      if (activeIdx.length === 0) return [];
+      const ranks = computeRanks(monthKey, totalDays);
+      const habits = monthState(monthKey).habits;
+      return activeIdx
+        .map(i => ({ rank: ranks[i], name: habits[i], pct: habitPct(monthKey, i, totalDays) }))
+        .sort((a, b) => a.rank - b.rank)
+        .slice(0, n);
+    }
+
+    function renderAnalytics() {
+      const root = document.getElementById("pageRoot");
+      const meta = monthMetaFor(analyticsSelected.year, analyticsSelected.monthIndex);
+      const monthKey = meta.key;
+      const totalDays = daysInMonth(meta.year, meta.monthIndex);
+      const activeIdx = activeHabitIndices(monthKey);
+
+      let totalCompleted = 0;
+      activeIdx.forEach(i => { totalCompleted += habitTotal(monthKey, i, totalDays); });
+      const totalPossible = activeIdx.length * totalDays;
+      const overallPct = totalPossible > 0 ? (totalCompleted / totalPossible) * 100 : 0;
+
+      let totalBeatDays = 0, sumBeatPct = 0;
+      if (activeIdx.length > 0) {
+        for (let d = 1; d <= totalDays; d++) {
+          const pct = beatDayPct(monthKey, d);
+          sumBeatPct += pct;
+          if (pct >= 100) totalBeatDays++;
+        }
+      }
+      const avgBeatDay = totalDays > 0 ? sumBeatPct / totalDays : 0;
+
+      const moodCounts = {}; MOOD_OPTIONS.forEach(m => moodCounts[m.key] = 0);
+      let moodTotalSet = 0;
+      for (let d = 1; d <= totalDays; d++) {
+        const mk = getMood(monthKey, d);
+        if (mk && moodCounts.hasOwnProperty(mk)) { moodCounts[mk]++; moodTotalSet++; }
+      }
+      let dominantMoodKey = null;
+      MOOD_OPTIONS.forEach(m => {
+        if (moodCounts[m.key] > 0 && (dominantMoodKey === null || moodCounts[m.key] > moodCounts[dominantMoodKey])) dominantMoodKey = m.key;
+      });
+      const dominantMood = dominantMoodKey ? moodOption(dominantMoodKey) : null;
+
+      const topHabits = topHabitsForMonth(meta, 3);
+      const smartInsight = generateSmartInsight(meta);
+
+      root.innerHTML = `
+    <h1 class="page-title">Analytics</h1>
+    <p class="page-sub">Rangkuman: ${meta.label} ${meta.year}</p>
+
+    <div class="card">
+      <h2>Pilih Periode</h2>
+      <div class="mobile-period-picker">
+        <button type="button" class="year-step" id="analyticsYearPrev" aria-label="Tahun sebelumnya">◀</button>
+        <span class="year-label">${meta.year}</span>
+        <button type="button" class="year-step" id="analyticsYearNext" aria-label="Tahun berikutnya">▶</button>
+        <select id="analyticsMonthSelect" class="month-select">
+          ${MONTH_NAMES.map((name, i) => `<option value="${i}" ${i === meta.monthIndex ? "selected" : ""}>${name}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Statistik Keseluruhan</h2>
+      <div class="kpi-row">
+        <div class="kpi c-lavender">
+          <div class="kpi-top"><div class="ic-wrap">✅</div></div>
+          <div class="lbl">Total Completed</div>
+          <div class="val">${totalCompleted}</div>
+        </div>
+        <div class="kpi c-mint">
+          <div class="kpi-top"><div class="ic-wrap">📊</div></div>
+          <div class="lbl">% Completed</div>
+          <div class="val">${overallPct.toFixed(0)}%</div>
+        </div>
+        <div class="kpi c-gold">
+          <div class="kpi-top"><div class="ic-wrap">🏆</div></div>
+          <div class="lbl">Total Hari Beat the Day</div>
+          <div class="val">${totalBeatDays}</div>
+        </div>
+        <div class="kpi c-peach">
+          <div class="kpi-top"><div class="ic-wrap">🌤️</div></div>
+          <div class="lbl">Rata-rata Beat the Day</div>
+          <div class="val">${avgBeatDay.toFixed(0)}%</div>
+        </div>
+        <div class="kpi c-pink">
+          <div class="kpi-top"><div class="ic-wrap">🎭</div></div>
+          <div class="lbl">Mood Dominan</div>
+          <div class="val" style="font-size:20px;">${dominantMood ? `${dominantMood.emoji} ${dominantMood.label}` : "–"}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Distribusi Mood</h2>
+      ${moodTotalSet === 0
+          ? `<p class="mood-dist-empty">Belum ada mood harian yang diisi di periode ini.</p>`
+          : `<div class="mood-dist">
+            ${MOOD_OPTIONS.map(m => `
+              <div class="mood-dist-chip">${m.emoji}
+                <span class="mdc-pct">${((moodCounts[m.key] / moodTotalSet) * 100).toFixed(0)}%</span>
+                <span class="mdc-lbl">${m.label}</span>
+              </div>
+            `).join("")}
+          </div>`
+        }
+    </div>
+
+    <div class="card">
+      <h2>Top habit bulan ini</h2>
+      ${topHabits.length === 0
+          ? `<p class="empty-note">Belum ada habit aktif bulan ini.</p>`
+          : `<ol class="habit-rank-list">
+            ${topHabits.map(item => `
+              <li>
+                <span class="rank-badge ${item.rank === 1 ? "rank-1" : ""}">${item.rank}</span>
+                <span class="hr-name">${escapeHtml(item.name)}</span>
+                <span class="hr-pct">${item.pct.toFixed(0)}%</span>
+              </li>
+            `).join("")}
+          </ol>`
+        }
+    </div>
+
+    <div class="card">
+      <h2>Trend % complete</h2>
+      <div class="chart-wrap">${buildDailyTrendChart(monthKey, totalDays)}</div>
+    </div>
+
+    <div class="card insight-card">
+      <h2>Recap bulan ini✨</h2>
+      <p class="insight-text">${smartInsight}</p>
+    </div>
+  `;
+
+      document.getElementById("analyticsYearPrev").addEventListener("click", () => {
+        if (analyticsSelected.year > YEAR_MIN) { analyticsSelected.year--; renderAnalytics(); }
+      });
+      document.getElementById("analyticsYearNext").addEventListener("click", () => {
+        if (analyticsSelected.year < YEAR_MAX) { analyticsSelected.year++; renderAnalytics(); }
+      });
+      document.getElementById("analyticsMonthSelect").addEventListener("change", (e) => {
+        analyticsSelected.monthIndex = parseInt(e.target.value, 10);
+        renderAnalytics();
+      });
+    }
+
+    /* ---------- Main render ---------- */
+    function render() {
+      const route = currentRoute();
+      renderNav(route);
+      renderSidebar(route);
+      if (route.page === "onboarding") renderOnboarding();
+      else if (route.page === "month") renderMonthPage(route.key);
+      else if (route.page === "analytics") renderAnalytics();
+      else renderOnboarding();
+    }
+
+    /* ---------- Lock screen render ---------- */
+    function renderLockScreen() {
+      const el = document.getElementById("lockScreen");
+      el.classList.add("show");
+      el.innerHTML = `
+    <div class="lock-card">
+      <div class="lock-brand">🌸 Bloom</div>
+      <p class="lock-sub">Masukkan kode akses yang kamu terima saat pembelian ya ✨</p>
+      <input type="text" id="lockCodeInput" placeholder="Kode akses" autocomplete="off" />
+      <button class="btn-soft" id="lockSubmitBtn">Buka Bloom</button>
+      <p class="lock-error" id="lockError" style="display:none;">Kode salah nih, coba cek lagi ya.</p>
+    </div>
+  `;
+      const input = document.getElementById("lockCodeInput");
+      const err = document.getElementById("lockError");
+      function trySubmit() {
+        const val = input.value.trim();
+        if (val && val.toUpperCase() === ACCESS_CODE.toUpperCase()) {
+          grantAccess();
+          el.classList.remove("show");
+          el.innerHTML = "";
+          const savedEmail = localStorage.getItem(LAST_EMAIL_KEY) || "";
+          pinState = savedEmail ? { mode: "unlock", email: savedEmail, firstPin: "", input: "" } : { mode: "setup", email: "", firstPin: "", input: "" };
+          renderPinScreen();
+        } else {
+          err.style.display = "block";
+        }
+      }
+      document.getElementById("lockSubmitBtn").addEventListener("click", trySubmit);
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") trySubmit(); });
+      input.focus();
+    }
+
+    /* ---------- PIN screen render (login/signup, email + PIN 4 digit) ---------- */
+    let pinState = { mode: "unlock", email: "", firstPin: "", input: "" };
+    let pinErrorMsg = "";
+
+    function renderPinScreen() {
+      const el = document.getElementById("pinScreen");
+      el.classList.add("show");
+
+      let title, sub;
+      if (pinState.mode === "setup") { title = "Create a PIN"; sub = "Choose a 4 digit PIN to lock your tracker."; }
+      else if (pinState.mode === "confirm") { title = "Confirm your PIN"; sub = "Enter the same PIN again."; }
+      else { title = "Enter your PIN"; sub = "Unlock your tracker."; }
+
+      let dots = "";
+      for (let i = 0; i < 4; i++) dots += `<div class="pin-dot ${i < pinState.input.length ? "filled" : ""}"></div>`;
+
+      const showEmailField = pinState.mode !== "confirm";
+      const switchLink = pinState.mode === "setup"
+        ? `<div class="pin-switch">Udah punya akun? <button class="link-btn" id="toLoginBtn">Login</button></div>`
+        : (pinState.mode === "unlock"
+          ? `<div class="pin-switch">New here? <button class="link-btn" id="toSignupBtn">Sign up</button></div>`
+          : "");
+      const forgotLink = pinState.mode === "unlock" ? `<button class="pin-forgot" id="forgotPinBtn">Forgot PIN?</button>` : "";
+
+      el.innerHTML = `
+    <div class="pin-card" id="pinCard">
+      <div class="pin-emoji">🔐</div>
+      <div class="pin-title">${title}</div>
+      <div class="pin-sub">${sub}</div>
+      <div class="pin-error">${pinErrorMsg}</div>
+      ${showEmailField ? `<div class="pin-email-field"><label>Email</label><input type="email" id="pinEmailInput" placeholder="kamu@email.com" autocomplete="off" value="${escapeHtml(pinState.email || "")}" /></div>` : ""}
+      <div class="pin-dots">${dots}</div>
+      <div class="pin-keypad" id="pinKeypad"></div>
+      <button type="button" class="btn-soft btn-block" id="pinSubmitBtn" style="width:100%;" ${pinState.input.length < 4 ? "disabled" : ""}>${pinState.mode === "confirm" ? "Konfirmasi" : (pinState.mode === "unlock" ? "Unlock" : "Lanjut")}</button>
+      ${switchLink}
+      ${forgotLink ? `<div style="margin-top:6px;">${forgotLink}</div>` : ""}
+      <div class="pin-note-box">
+        <div class="pin-note-title">✨ READ THIS BEFORE YOU START ✨</div>
+        <ul class="pin-note-list">
+          <li>🔒 PIN + email ini jadi kunci login sekaligus kunci enkripsi tracker kamu. Kalau kamu lupa, datanya nggak bisa dipulihin sama sekali</li>
+          <li>☁️ Tracker kamu tersimpan dan terenkripsi di cloud, bisa diakses dual-device dengan email dan PIN yang kamu buat</li>
+          <li>✅ Jangan share email &amp; PIN kamu ke siapapun</li>
+          <li>❌ Tidak untuk di share ke orang lain ya</li>
+        </ul>
+      </div>
+    </div>
+  `;
+
+      if (showEmailField) {
+        document.getElementById("pinEmailInput").addEventListener("input", (e) => { pinState.email = e.target.value; });
+      }
+
+      const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "back"];
+      const keypad = document.getElementById("pinKeypad");
+      keypad.innerHTML = keys.map(k => {
+        if (k === "") return "<div></div>";
+        if (k === "back") return `<button type="button" class="pin-key pin-back" id="pinBackKey">⌫</button>`;
+        return `<button type="button" class="pin-key" data-digit="${k}">${k}</button>`;
+      }).join("");
+      keypad.querySelectorAll("[data-digit]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (pinState.input.length < 4) { pinState.input += btn.dataset.digit; pinErrorMsg = ""; renderPinScreen(); }
+        });
+      });
+      document.getElementById("pinBackKey").addEventListener("click", () => {
+        pinState.input = pinState.input.slice(0, -1);
+        renderPinScreen();
+      });
+      document.getElementById("pinSubmitBtn").addEventListener("click", pinSubmit);
+      const forgotBtn = document.getElementById("forgotPinBtn");
+      if (forgotBtn) forgotBtn.addEventListener("click", () => {
+        alert("PIN kamu itu sekaligus kunci enkripsi data — kalau lupa, datanya nggak bisa dipulihin sama siapapun (termasuk kami). Coba inget-inget lagi, atau mulai dari awal pakai email lain.");
+      });
+      const toLoginBtn = document.getElementById("toLoginBtn");
+      if (toLoginBtn) toLoginBtn.addEventListener("click", () => {
+        pinState = { mode: "unlock", email: pinState.email, firstPin: "", input: "" };
+        pinErrorMsg = ""; renderPinScreen();
+      });
+      const toSignupBtn = document.getElementById("toSignupBtn");
+      if (toSignupBtn) toSignupBtn.addEventListener("click", () => {
+        pinState = { mode: "setup", email: pinState.email, firstPin: "", input: "" };
+        pinErrorMsg = ""; renderPinScreen();
+      });
+    }
+
+    function shakePinCard() {
+      const card = document.getElementById("pinCard");
+      if (!card) return;
+      card.classList.add("shake");
+      setTimeout(() => card.classList.remove("shake"), 400);
+    }
+
+    async function pinSubmit() {
+      if (pinState.input.length < 4) return;
+      if (pinState.mode !== "confirm" && !isValidEmail(pinState.email)) {
+        pinErrorMsg = "Masukin email yang valid dulu ya.";
+        renderPinScreen();
+        return;
+      }
+      if (pinState.mode === "setup") {
+        pinState.firstPin = pinState.input;
+        pinState.input = "";
+        pinState.mode = "confirm";
+        renderPinScreen();
+      } else if (pinState.mode === "confirm") {
+        if (pinState.input !== pinState.firstPin) {
+          pinErrorMsg = "PIN-nya beda — coba lagi ya.";
+          pinState.mode = "setup";
+          pinState.input = "";
+          pinState.firstPin = "";
+          renderPinScreen();
+          shakePinCard();
+          return;
+        }
+        await tryPinSignUp();
+      } else {
+        await tryPinSignIn();
+      }
+    }
+
+    /* Anti data-leak buat device gantian (mis. HP/laptop dipakai bergantian sama 2 pembeli beda):
+       STORAGE_KEY ('bloomTrackerData_v1') itu SATU key localStorage doang, nggak di-namespace per
+       email — kalau nggak di-guard, pas akun B login di device yang masih nyimpen data lokal akun A
+       (belum di-clear), syncFromCloud() bakal mbandingin STATE.updatedAt (punya A, biasanya lebih
+       baru) vs cloud.updatedAt (punya B) dan salah nge-push data A ke cloud B. Fix: begitu email
+       yang login BEDA dari LAST_EMAIL_KEY tersimpan sebelumnya (dicek SEBELUM LAST_EMAIL_KEY
+       ditimpa), local STATE di-reset ke kosong dulu -- biar syncFromCloud() abis ini jujur ngambil
+       data cloud si pemilik akun yang bener, bukan ketiban leftover lokal akun sebelumnya. Login
+       ulang pakai email yang SAMA di device yang sama (kasus paling umum) TETAP nggak kena reset,
+       jadi tetap bisa lanjut kerja offline seperti biasa. */
+    function resetLocalStateIfAccountSwitched(email) {
+      const previousEmail = localStorage.getItem(LAST_EMAIL_KEY);
+      if (previousEmail && previousEmail !== email) {
+        STATE = normalizeState(null);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      }
+    }
+
+    async function tryPinSignUp() {
+      const email = pinState.email.trim().toLowerCase();
+      const password = await derivePassword(email, pinState.input);
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        if (err && err.code === "auth/email-already-in-use") {
+          pinErrorMsg = "Email itu udah punya akun — coba Login.";
+          pinState.mode = "unlock";
+          pinState.input = ""; pinState.firstPin = "";
+          renderPinScreen();
+          return;
+        }
+        pinErrorMsg = friendlyAuthError(err);
+        pinState.mode = "setup";
+        pinState.input = ""; pinState.firstPin = "";
+        renderPinScreen();
+        shakePinCard();
+        return;
+      }
+      encryptionKey = await deriveEncryptionKey(email, pinState.input);
+      resetLocalStateIfAccountSwitched(email);
+      localStorage.setItem(LAST_EMAIL_KEY, email);
+      await unlockAfterPin();
+    }
+
+    async function tryPinSignIn() {
+      const email = pinState.email.trim().toLowerCase();
+      const password = await derivePassword(email, pinState.input);
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        pinErrorMsg = friendlyAuthError(err);
+        pinState.input = "";
+        renderPinScreen();
+        shakePinCard();
+        return;
+      }
+      encryptionKey = await deriveEncryptionKey(email, pinState.input);
+      resetLocalStateIfAccountSwitched(email);
+      localStorage.setItem(LAST_EMAIL_KEY, email);
+      await unlockAfterPin();
+    }
+
+    /* #23 root cause: percobaan sebelumnya cuma nge-cek "location.hash kosong" di currentRoute(),
+       TAPI hash-based routing itu nempel di address bar ANTAR reload/reopen (beda dari SPA history
+       routing biasa) -- begitu user PERNAH buka tab Analytics sekali aja, hash "#/analytics" masih
+       nyangkut di URL tiap kali app dibuka ulang, jadi kondisi "hash kosong" nyaris nggak pernah
+       kena di real device -- makanya fix lama keliatan gagal padahal logic-nya sendiri sebenernya
+       benar. Fix yang bener: override hash di titik dashboard beneran "mount" -- yaitu tiap kali
+       PIN berhasil di-unlock (dipanggil ulang tiap sesi/tiap app dibuka, BUKAN cuma sekali seumur
+       hidup) -- unconditional di mobile, nimpa hash lama apa pun isinya sebelum render() pertama
+       jalan. Desktop TIDAK disentuh sama sekali. Navigasi manual user ke tab lain setelah ini tetap
+       normal (currentRoute() balik baca hash asli lewat navigate()/hashchange). */
+    function applyMobileDefaultLanding() {
+      if (window.innerWidth < 900) {
+        location.hash = `#/month/${monthKeyFor(todayInfo().year, todayInfo().monthIndex)}`;
+      }
+    }
+
+    async function unlockAfterPin() {
+      pinErrorMsg = "";
+      document.getElementById("pinScreen").classList.remove("show");
+      document.getElementById("pinScreen").innerHTML = "";
+      document.body.classList.remove("locked");
+      try { await syncFromCloud(); } catch (e) { /* offline: lanjut pakai data lokal */ }
+      applyMobileDefaultLanding();
+      render();
+    }
+
+    function lockBloomAccount() {
+      encryptionKey = null;
+      signOut(auth).catch(() => { });
+      const savedEmail = localStorage.getItem(LAST_EMAIL_KEY) || "";
+      pinState = { mode: "unlock", email: savedEmail, firstPin: "", input: "" };
+      pinErrorMsg = "";
+      document.body.classList.add("locked");
+      renderPinScreen();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("topbarLockBtn").addEventListener("click", lockBloomAccount);
+      if (hasAccess()) {
+        document.body.classList.add("locked");
+        const savedEmail = localStorage.getItem(LAST_EMAIL_KEY) || "";
+        pinState = savedEmail ? { mode: "unlock", email: savedEmail, firstPin: "", input: "" } : { mode: "setup", email: "", firstPin: "", input: "" };
+        renderPinScreen();
+      } else {
+        document.body.classList.add("locked");
+        renderLockScreen();
+      }
+    });
+  </script>
+</body>
+
+</html>

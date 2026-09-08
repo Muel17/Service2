@@ -6,28 +6,28 @@
 <title>🌸 Bloom — Habit & Goal Tracker</title>
 <style>
 :root{
-  --lavender:#E6DFF7; --lavender-dark:#9B85C9;
-  --mint:#D6F5E3; --mint-dark:#6FBF9B;
-  --peach:#FFE3D1; --peach-dark:#E8A87C;
-  --pink:#FFDFE9; --pink-dark:#E88FA8;
-  --blue:#DCEEFB;
-  --yellow:#FFF6D6;
-  --ink:#5B4B7A;
-  --gold:#F2C94C;
-  --card-bg:#FFFFFF;
-  --page-bg: linear-gradient(160deg, #F7F3FF 0%, #FDF6FA 50%, #F3FBF7 100%);
-  --shadow: 0 4px 16px rgba(155,133,201,0.15);
+  --lavender:#E1E5D9; --lavender-dark:#8B9977;
+  --mint:#F1EDE1; --mint-dark:#C2B59B;
+  --peach:#E8C5B5; --peach-dark:#C4785A;
+  --pink:#E8D1D1; --pink-dark:#B07D81;
+  --blue:#D6DADD;
+  --yellow:#FAF6EA;
+  --ink:#2C3E3A;
+  --gold:#D69B43;
+  --card-bg:#FCFCFA;
+  --page-bg: linear-gradient(160deg, #F6F5F2 0%, #EFEBE4 50%, #E8E5DF 100%);
+  --shadow: 0 4px 16px rgba(44,62,58,0.08);
   --radius: 18px;
   --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
 
-  --sidebar-bg: linear-gradient(180deg, #5C3A52 0%, #6B3F58 55%, #7A4863 100%);
-  --sidebar-text: #E8D5DE;
-  --sidebar-text-dim: #C7A8B8;
-  --sidebar-active-bg: rgba(255,255,255,0.14);
-  --sidebar-accent: #F2C94C;
+  --sidebar-bg: linear-gradient(180deg, #3E4943 0%, #35403A 55%, #2B342E 100%);
+  --sidebar-text: #E5E7E5;
+  --sidebar-text-dim: #A6AFA9;
+  --sidebar-active-bg: rgba(255,255,255,0.12);
+  --sidebar-accent: #D69B43;
   --sidebar-width: 240px;
 
-  --lavender-tint:#EFEBFA; --mint-tint:#E6F7EF; --gold-tint:#FDF3DE; --pink-tint:#FCEBF1;
+  --lavender-tint:#F3F5F0; --mint-tint:#F8F6F1; --gold-tint:#FDF7ED; --pink-tint:#F6EBEB;
 }
 
 *{box-sizing:border-box;}
@@ -1907,10 +1907,7 @@ function renderPinScreen(){
 }
 
 function shakePinCard(){
-  const card = document.getElementById("pinCard");
-  if(!card) return;
-  card.classList.add("shake");
-  setTimeout(() => card.classList.remove("shake"), 400);
+  // Animation removed per user request
 }
 
 async function pinSubmit(){
